@@ -9,12 +9,15 @@
 <a href="{% url "accounts:logout" %}">logout</a>
 <a href="{% url "accounts:profile" %}">내 프로필</a>
 <a href="{% url "accounts:create" %}">create</a>
-<div class="index-grid">
+
+<div class="except-nav">
+<div class="pics">
  
 {% for post in posts  %}
 
-<img src="{{post.content.url}}" alt="" class='post-img'>
+<img src="{{post.content.url}}" alt="" class="image">
 {% endfor %} 
+</div>
 </div>
 {% else %}
 <div class="login-card">
