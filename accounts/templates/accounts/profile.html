@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<div class="custom-navbar">
+  <a href="{% url "accounts:index" %}">
+  <img src="{% static 'logo.png' %}" alt="1" class="navbar-logo"></a>
+  <div class="log-sin-nav">
+    
+    <a class="btn btn-primary nav-btn" href="{% url "accounts:login" %}">로그인</a>
+    <div>
+      <a href="{% url "accounts:signup" %}">가입하기</a>
+    </div>
+  </div>
+  
+</div>
+
+<div class="mypost">
+  <div class="box">d</div>
+  <div class="box">d</div>
+  <div class="box">d</div>
+</div>
+<a href="{% url "accounts:create" %}">게시글 올리기</a>
+{% endblock content %}
+

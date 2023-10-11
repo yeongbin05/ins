@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+{% if request.user.is_authenticated %}
+<h1>로그인 됐다</h1>
+{{user}}
+<a href="{% url "accounts:logout" %}">logout</a>
+<a href="{% url "accounts:profile" %}">내 프로필</a>
+<a href="{% url "accounts:create" %}">create</a>
+<div class="index-grid">
+ 
+{% for post in posts  %}
+
+<img src="{{post.content.url}}" alt="" class='post-img'>
+{% endfor %} 
+</div>
+{% else %}
+<div class="login-card">
+  
+  <img src="{% static 'logo.png' %}" alt="1" class="logo-img">
+</div>
+<div class="signup-card">
+  계정이 없으신가요?
+  <span><a href="{% url "accounts:signup" %}">가입하기</a></span>
+</div>
+
+
+{% endif %}
+{% endblock content %}
+
+

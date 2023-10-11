@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load bootstrap5 %}
+{% block content %}
+<form action="{% url "accounts:signup" %}" method="POST" class= 'email-signup'>
+  {% csrf_token %}
+  {% comment %} {{form.as_p}} {% endcomment %}
+  {% bootstrap_form form layout='horizontal' %}
+  <input type="submit" value='가입' class='btn btn-primary signup-btn'>
+</form>
+<div class="signup-card">
+  계정이 있으신가요?
+  <span><a href="{% url "accounts:login" %}">로그인</a></span>
+</div>
+{% endblock content %}
+
+
