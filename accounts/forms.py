@@ -7,7 +7,7 @@ from .models import Post
 class CustomUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = get_user_model()
-        
+        # fields = ("email","name","username")
         
 class CustomUserChangeForm(UserChangeForm):
     class Meta(UserChangeForm.Meta):

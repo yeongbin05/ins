@@ -32,7 +32,7 @@ ALLOWED_HOSTS = []
 CUSTOM_APPS = [
     "bootstrap5",
     # 'common.apps.CommonConfig',
-    
+    # 'chats.apps.ChatsConfig',
     'accounts.apps.AccountsConfig',
 ]
 SYSTEM_APPS = [

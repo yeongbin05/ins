@@ -7,28 +7,54 @@
 <h1>로그인 됐다</h1>
 {{user}}
 <a href="{% url "accounts:logout" %}">logout</a>
-<a href="{% url "accounts:profile" %}">내 프로필</a>
-<a href="{% url "accounts:create" %}">create</a>
+<a href="{% url "accounts:profile" user.username %}">내 프로필</a>
 
-<div class="except-nav">
-<div class="pics">
- 
-{% for post in posts  %}
 
-<img src="{{post.content.url}}" alt="" class="image">
-{% endfor %} 
-</div>
-</div>
+
 {% else %}
+{% comment %} <img src="{%  static "landing.jpg" %}" alt="" class='index-landing'> {% endcomment %}
+<div class='index-body'>
+  <div class="index-left">
+    
+  </div>
+  <div class='index-right'>
 <div class="login-card">
   
-  <img src="{% static 'logo.png' %}" alt="1" class="logo-img">
+  <img src="{% static 'logo.png' %}" alt="1" class="index-logo-img">
+  <form action="{% url "accounts:login" %}" method='POST'>
+    {% csrf_token %}
+    {% comment %} {{form.as_p}} {% endcomment %}
+    {% for field in form %}
+    <div class="form-group">
+      {% if field.label == 'Username' %}
+      <input
+        class="form-control log-in-form"
+        
+        placeholder="전화번호, 사용자 이름 또는 이메일"
+        name="{{ field.name }}"
+      />
+      {% else %}
+      <input
+        {% comment %} type="{{ field.field.widget.input_type }}" {% endcomment %}
+        class="form-control log-in-form"
+        {% comment %} id="{{ field.id_for_label }}" {% endcomment %}
+        placeholder=" 비밀번호 "
+        name="{{ field.name }}"
+      />
+      
+      {% endif %}
+      
+    </div>
+    {% endfor %}
+    <input type="submit" value = '로그인' class='btn btn-primary signup-btn'>
+  </form>
 </div>
 <div class="signup-card">
   계정이 없으신가요?
   <span><a href="{% url "accounts:signup" %}">가입하기</a></span>
 </div>
-
+</div>
+</div>
 
 {% endif %}
 {% endblock content %}

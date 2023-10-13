@@ -2,23 +2,77 @@
 {% load static %}
 {% block content %}
 <div class="custom-navbar">
+  
   <a href="{% url "accounts:index" %}">
   <img src="{% static 'logo.png' %}" alt="1" class="navbar-logo"></a>
-  <div class="log-sin-nav">
+  {% if request.user.is_authenticated %}
+  <a class="btn btn-primary nav-btn" href="{% url "accounts:logout" %}">로그아웃</a>
+
+  {% else  %}
+ <div class="log-sin-nav">
     
     <a class="btn btn-primary nav-btn" href="{% url "accounts:login" %}">로그인</a>
     <div>
       <a href="{% url "accounts:signup" %}">가입하기</a>
     </div>
   </div>
-  
+
+ {% endif %}
+</div>
+<div class="except-nav">
+<header>
+  <div class='profile-image'><img src="" class ='profile' alt=""></div>
+  <div class="except-image">
+    <div>
+      <span>{{user.username}}</span>
+      <button type="button" class="btn btn-light grey-btn">Follow</button>
+      <button type="button" class="btn btn-light grey-btn">Message</button>
+    </div>
+    <div>
+      <span>posts</span>
+      <span>folowers</span>
+      <span>following</span>
+    </div>
+    <div>
+      {{user.username}}
+    </div>
+  </div>
+</header>
+<div class="header-bottom">
+  게시물
 </div>
 
-<div class="mypost">
-  <div class="box">d</div>
-  <div class="box">d</div>
-  <div class="box">d</div>
-</div>
+
+
+  <div class="pics">
+    
+   
+  {% for post in posts  %}
+  
+  <img src="{{post.content.url}}" alt="" class="image">
+  {% endfor %} 
+
+  </div>
+  </div>
+  
+
 <a href="{% url "accounts:create" %}">게시글 올리기</a>
+<a href="{% url "accounts:create" %}">프로필 올리기</a>
+
+<div class="footer-black">
+  <div class="white">
+  <div class="profile-footer-logo">
+    <img src="{% static 'simple_logo.png' %}" alt="logo" class="profile-footer-logo-img">
+  </div>
+  <div class='profile-footer-text'>
+    <div>Instagram에 로그인</div>
+    <div>로그인하여 친구들의 사진과 동영상을 확인하고 회원님이 좋아할 만한 계정을 찾아보세요.</div>
+  </div>
+  <div class='profile-footer-button'>
+    <a href="{% url "accounts:login" %}" class='btn btn-primary'>로그인</a>
+    <div><a href="{% url "accounts:signup" %}">가입하기</a></div>
+  </div>
+</div>
+</div>
 {% endblock content %}
 

@@ -7,8 +7,10 @@ from .models import Post
 # Create your views here.
 def index(request):
     posts = Post.objects.all()
+    form = AuthenticationForm()
     context= {
         'posts' : posts,
+        'form' : form,
     }
     return render(request,'accounts/index.html',context)
 
@@ -18,11 +20,11 @@ def signup(request):
         form = CustomUserCreationForm(request.POST)
         
         if form.is_valid():
-            print(3)
+            
             user=form.save()
             auth_login(request,user)
-            print(2)
-            print(request.user,11)
+            
+            
             return redirect('accounts:index')
         
     else :
@@ -56,8 +58,12 @@ def logout(request):
         auth_logout(request)
         return redirect('accounts:index')
     
-def profile(request):
-    return render(request,'accounts/profile.html')
+def profile(request,user_id):
+    posts = Post.objects.all()
+    context= {
+        'posts' : posts,
+    }
+    return render(request,'accounts/profile.html',context)
 
 def create(request):
     if request.method == 'POST':
@@ -68,7 +74,7 @@ def create(request):
         if form.is_valid():
             form.save()
             print(22222)
-        return redirect('accounts:index')
+        return redirect('accounts:profile', request.user)
     
     else :
         form = PostForm()
