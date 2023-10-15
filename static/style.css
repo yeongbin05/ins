@@ -20,6 +20,12 @@
   width:380.312px;
   height:581.141px;
 }
+
+.index-pic {
+  box-sizing: content-box;
+  width:380.312px;
+  height:581.141px;
+}
 .log-in-form {
   background-color: #FAFAFA;
   color:red;
@@ -239,3 +245,48 @@
     height:56px;
     z-index: 99;
   }
+
+
+
+
+  .slideshow-container {
+    max-width: 100%;
+    position: relative;
+    /* margin: auto; */
+}
+
+/* 이미지 스타일 */
+.mySlides {
+  display: none;
+  animation: fade 5s linear; /* 이미지 페이드 애니메이션 (5초 동안 한 번 재생) */
+  
+}
+
+/* 캡션 텍스트 스타일 */
+.text {
+    color: #f2f2f2;
+    font-size: 15px;
+    padding: 8px 12px;
+    position: absolute;
+    bottom: 8px;
+    width: 100%;
+    text-align: center;
+}
+
+/* 이미지 페이드 애니메이션 키프레임 */
+@keyframes fade {
+    0%,100%{
+        opacity: 0;
+    }
+    
+    25%,50%,75% {
+        opacity: 1;
+    }
+}
+
+
+
+
+
+
+

@@ -34,6 +34,7 @@ CUSTOM_APPS = [
     # 'common.apps.CommonConfig',
     # 'chats.apps.ChatsConfig',
     'accounts.apps.AccountsConfig',
+    'chats',
 ]
 SYSTEM_APPS = [
     

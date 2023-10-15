@@ -8,14 +8,25 @@
 {{user}}
 <a href="{% url "accounts:logout" %}">logout</a>
 <a href="{% url "accounts:profile" user.username %}">내 프로필</a>
-
+<a href="{% url "inbox" %}">채팅</a>
 
 
 {% else %}
-{% comment %} <img src="{%  static "landing.jpg" %}" alt="" class='index-landing'> {% endcomment %}
 <div class='index-body'>
   <div class="index-left">
-    
+    <div class="slideshow-container">
+      <div class="mySlides">
+          <img class="index-pic" src="{% static "index1.PNG" %}" >
+          
+      </div>
+  
+      <div class="mySlides">
+          <img class="index-pic" src="{% static "index2.PNG" %}" >
+          
+      </div>
+  
+      <!-- 여기에 더 많은 이미지를 추가할 수 있습니다. -->
+  </div>
   </div>
   <div class='index-right'>
 <div class="login-card">
@@ -23,7 +34,6 @@
   <img src="{% static 'logo.png' %}" alt="1" class="index-logo-img">
   <form action="{% url "accounts:login" %}" method='POST'>
     {% csrf_token %}
-    {% comment %} {{form.as_p}} {% endcomment %}
     {% for field in form %}
     <div class="form-group">
       {% if field.label == 'Username' %}
@@ -35,9 +45,7 @@
       />
       {% else %}
       <input
-        {% comment %} type="{{ field.field.widget.input_type }}" {% endcomment %}
         class="form-control log-in-form"
-        {% comment %} id="{{ field.id_for_label }}" {% endcomment %}
         placeholder=" 비밀번호 "
         name="{{ field.name }}"
       />
@@ -55,8 +63,32 @@
 </div>
 </div>
 </div>
+<script>
+  let slideIndex = 0;
+showSlides();
 
+function showSlides() {
+    let slides = document.getElementsByClassName("mySlides");
+    for (let i = 0; i < slides.length; i++) {
+        slides[i].classList.remove('active');
+        slides[i].style.display = "none";
+    }
+    slideIndex++;
+    if (slideIndex > slides.length) {
+        slideIndex = 1;
+    }
+    slides[slideIndex - 1].classList.add('active');
+    slides[slideIndex - 1].style.display = "block";
+    
+    setTimeout(showSlides, 5000); // 애니메이션 간격을 5초로 설정
+}
+</script>
 {% endif %}
+
 {% endblock content %}
 
 
+ 
+ 
+ 
+ 
