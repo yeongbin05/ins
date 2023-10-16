@@ -24,14 +24,27 @@
   <div class='profile-image'><img src="" class ='profile' alt=""></div>
   <div class="except-image">
     <div>
-      <span>{{user.username}}</span>
-      <button type="button" class="btn btn-light grey-btn">Follow</button>
+      <span>{{profile.username}}</span>
+
+      <!--팔로우 기능-->
+      {% if request.user != profile.username %}
+      <form action="{% url "accounts:follow" profile.username %}" method="POST">
+        {% csrf_token %}
+        {% if profile.user not in user.following.all %}
+          <input type="submit" value="FOLLOW" class="btn btn-primary">
+        {% else %}
+          <input type="submit" value="FOLLOW" class="btn btn-success">
+        {% endif %}
+      </form>
+      {% endif %}
+         
+      
       <button type="button" class="btn btn-light grey-btn">Message</button>
     </div>
     <div>
       <span>posts</span>
-      <span>folowers</span>
-      <span>following</span>
+      <span>followers {{ profile.follow_me.all.count }}</span>
+      <span>following {{ profile.i_follow.all.count }}</span>
     </div>
     <div>
       {{user.username}}

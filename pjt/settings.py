@@ -35,7 +35,9 @@ CUSTOM_APPS = [
     # 'chats.apps.ChatsConfig',
     'accounts.apps.AccountsConfig',
     'chats',
+    'posts',
 ]
+
 SYSTEM_APPS = [
     
     'django_extensions',
@@ -46,6 +48,7 @@ SYSTEM_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+
 INSTALLED_APPS = CUSTOM_APPS+SYSTEM_APPS
 
 MIDDLEWARE = [

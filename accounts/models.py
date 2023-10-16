@@ -20,9 +20,24 @@ class User(AbstractUser):
     bluebadge = models.BooleanField(default=False)
     profileimage = models.ImageField(null=True)
     # is_active = models.BooleanField(null=True)
+    following = models.ManyToManyField('self', through='Follow', symmetrical=False, blank=True)
+
 
 class Post(models.Model):
     # content = models.ImageField()
     content = models.ImageField(upload_to=articles_image_path)
     text = models.CharField(max_length=300)
     user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
+
+
+
+class Follow(models.Model):
+    follower = models.ForeignKey(User, related_name='follow_me', on_delete=models.CASCADE)
+    following = models.ForeignKey(User, related_name='i_follow', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('follower', 'following')
+    
+
+
