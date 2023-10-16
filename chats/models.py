@@ -1,7 +1,7 @@
 from django.db import models
 from accounts.models import User
 from django.db.models import Max
-from pjt import settings
+from django.conf import settings
 # Create your models here.
 class Message(models.Model):
 	user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='user')
