@@ -5,9 +5,14 @@ from django.contrib.auth import logout as auth_logout
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest
+####
+from .forms import CustomUserChangeForm,CustomUserCreationForm,PostForm,CommentForm
+from .models import User, Post, Follow,Comment
+####
 from .forms import CustomUserChangeForm,CustomUserCreationForm
 from .models import User, Follow
 from posts.models import Post
+#####
 
 # Create your views here.
 def index(request):
@@ -65,6 +70,7 @@ def logout(request):
         return redirect('accounts:index')
     
 
+
 def profile(request, user_name):
     User = get_user_model()
     person = User.objects.get(username=user_name)
@@ -74,6 +80,8 @@ def profile(request, user_name):
         'person':person,
         'followers':followers,
         'followings':followings,
+        'comment_form' : CommentForm,
+
     }
     return render(request,'accounts/profile.html',context)
 
@@ -132,3 +140,29 @@ def unfollow(request, user_name):
     
 
 ##########################
+
+def test(request,user_name):
+            
+    user = User.objects.get(username=user_name)  # follow할 대상
+
+    followers = Follow.objects.filter(follower=user)
+    context = {
+        'followers' : followers,
+    }
+    return render(request,'accounts/test.html', context)
+
+
+# def comments_create(request,pk):
+#     post = Post.objects.get(pk=pk)
+#     comment_form = CommentForm(request.POST)
+#     if comment_form.is_valid():
+#         comment = comment_form.save(commit=False)
+#         comment.post = post
+#         comment_form.save()
+#         return redirect('accounts:profile',post.pk)
+    
+#     context = {
+#         'post' : post,
+#         'comment_form' : comment_form,
+#     }
+#     return render(request,'accounts/profile.html',context)

@@ -46,6 +46,19 @@
         
 
     <div>
+
+      
+      {% comment %} <span >followers {{ profile.follow_me.all.count }}</span> {% endcomment %}
+      {% comment %} <a href="" onclick="openModal()">followers {{ profile.follow_me.all.count }}</a> {% endcomment %}
+
+      <a href="javascript:void(0)" onclick="openModal()">followers {{ profile.follow_me.all.count }}</a>
+      <a href="javascript:void(0)" onclick="openfModal()">following {{  profile.i_follow.all.count }}</a>
+
+      <span>following {{ profile.i_follow.all.count }}</span>
+
+      
+      
+      <!-- 수 / 목록  -->
       <span>followers {{ followers.count }}</span>
       <p>host를 팔로우한사람 명단</p>
       {% for id in followers %}               <!--host를 팔로우한 Follow테이블 데이터들에서 -->
@@ -57,6 +70,7 @@
       {% for id in followings %}
         <p>{{ id.follower }}</p>
       {% endfor %}
+
 
     </div>
     
@@ -70,11 +84,41 @@
 
   <div class="pics">
     
+
+    
+  {% for post in posts %}
+  <!-- 이미지를 클릭하면 해당 모달 팝업 창 열기 -->
+  <img src="{{ post.content.url }}" alt="" class="image" onclick="openImgModal('{{ post.content.url }}', '{{ forloop.counter }}')">
+
+  <!-- 고유한 id를 가진 모달 팝업 창 -->
+  <div id="imgModal{{ forloop.counter }}" class="modal">
+    <div class="img-modal-content">
+      <!-- 모달 닫기 버튼 -->
+      {% comment %} <span class="close" onclick="closeImgModal('{{ forloop.counter }}')"></span> {% endcomment %}
+      
+      <!-- 이미지 표시 -->
+      <div class="modal-img-text">
+      <img src="{{ post.content.url }}" alt="" class="image">
+      <div>
+        {{profile.username}}
+      <p>{{post.text}}</p>
+      {{comment_form}}
+    </div>
+    </div>
+    </div>
+  </div>
+{% endfor %}
+ 
+ 
+  
+
+
    
   {% for post in person.post_set.all  %}
   
   <img src="{{ post.content.url }}" alt="" class="image">
   {% endfor %} 
+
 
   </div>
   </div>
@@ -103,5 +147,82 @@
 </div>
 </div>
 {% endif %}
+
+{% comment %} follower모달 {% endcomment %}
+<div id="myModal" class="modal">
+  <div class="modal-content">
+    {% comment %} <span class="close" onclick="closeModal">x</span> {% endcomment %}
+    {% for follower in followers  %}
+      {{follower}}
+      <hr>
+      {% endfor %}
+  </div>
+</div>
+<div id="myfModal" class="modal">
+  <div class="modal-content">
+    
+    {% for follow in followings  %}
+      {{follow}}
+      <hr>
+      {% endfor %}
+  </div>
+</div>
+
+
+<script>
+  // 모달 열기
+  function openModal() {
+    document.getElementById('myModal').style.display = 'block';
+  }
+
+  // 모달 닫기
+  function closeModal() {
+    document.getElementById('myModal').style.display = 'none';
+  }
+  // 모달 외부를 클릭하면 모달 닫기
+  window.onclick = function(event) {
+    if (event.target === document.getElementById('myModal')) {
+      closeModal();
+    }
+  }
+  
+  function openfModal() {
+    document.getElementById('myfModal').style.display = 'block';
+  }
+
+  // 모달 닫기
+  function closefModal() {
+    document.getElementById('myfModal').style.display = 'none';
+  }
+  // 모달 외부를 클릭하면 모달 닫기
+  window.onclick = function(event) {
+    if (event.target === document.getElementById('myfModal')) {
+      closefModal();
+    }
+  }
+  
+function openImgModal(imgUrl, modalNumber) {
+  // 이미지 URL을 모달에 설정
+  const imgModal = document.getElementById(`imgModal${modalNumber}`);
+  const modalImage = imgModal.querySelector('img');
+  modalImage.src = imgUrl;
+
+  imgModal.style.display = 'block';
+
+  // 모달 외부를 클릭하면 모달 닫기
+  imgModal.onclick = function(event) {
+    if (event.target === imgModal) {
+      closeImgModal(modalNumber);
+    }
+  };
+}
+
+// 모달 닫기
+ function closeImgModal(modalNumber) {
+  const imgModal = document.getElementById(`imgModal${modalNumber}`);
+  imgModal.style.display = 'none';
+} 
+</script>
+
 {% endblock content %}
 
