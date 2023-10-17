@@ -2,10 +2,13 @@ from django.shortcuts import render,redirect
 from django.contrib.auth.forms import AuthenticationForm,UserCreationForm
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest
-from .forms import CustomUserChangeForm,CustomUserCreationForm,PostForm
-from .models import User, Post, Follow
+from .forms import CustomUserChangeForm,CustomUserCreationForm
+from .models import User, Follow
+from posts.models import Post
+
 # Create your views here.
 def index(request):
     posts = Post.objects.all()
@@ -39,7 +42,6 @@ def signup(request):
 
 
 def login(request):
-
     if request.method == 'POST':
         form = AuthenticationForm(request, request.POST)
 
@@ -63,55 +65,57 @@ def logout(request):
         return redirect('accounts:index')
     
 
-def profile(request, user_id):
-    posts = Post.objects.all()
-    print('pro')
-    profile = User.objects.get(username=user_id)
+def profile(request, user_name):
+    User = get_user_model()
+    person = User.objects.get(username=user_name)
+    followers = Follow.objects.filter(follower=person)   # person을 팔로우한 follow 목록
+    followings = Follow.objects.filter(following=person) # person이 팔로잉한 follow 목록
     context= {
-        'posts' : posts,
-        'profile':profile,
+        'person':person,
+        'followers':followers,
+        'followings':followings,
     }
     return render(request,'accounts/profile.html',context)
 
 
-@login_required
-def create(request,user_id):
-    print(4444)
-    if request.method == 'POST':
-        form = PostForm(request.POST,request.FILES)
-        print(request.POST)
-        print(request.FILES)
-        print(3333)
-        if form.is_valid():
-            form.save()
-            print(22222)
-        return redirect('accounts:profile', request.user)
+# @login_required
+# def create(request,user_id):
+#     print(4444)
+#     if request.method == 'POST':
+#         form = PostForm(request.POST,request.FILES)
+#         print(request.POST)
+#         print(request.FILES)
+#         print(3333)
+#         if form.is_valid():
+#             form.save()
+#             print(22222)
+#         return redirect('accounts:profile', request.user)
     
-    else :
-        form = PostForm()
-        print(11111111111111111)
-    context = {
-        'form' : form,
-    }
-    return render(request,'accounts/create.html',context)
+#     else :
+#         form = PostForm()
+#         print(11111111111111111)
+#     context = {
+#         'form' : form,
+#     }
+#     return render(request,'accounts/create.html',context)
 
 
 ########### 팔로우 기능
 @login_required
 def follow(request, user_name):
     if request.method == "POST":
-        user_to_follow = User.objects.get(username=user_name)  # follow할 대상
+        person = User.objects.get(username=user_name)  # follow할 대상
         print('$$$')
-        if request.user != user_to_follow:
-            if request.user in user_to_follow.following.all():
-                user_to_follow.following.remove(request.user)
+        if request.user != person:
+            if Follow.objects.filter(follower=person, following=request.user).exists():
+                Follow.objects.filter(follower=person, following=request.user).delete()
             else:
-                user_to_follow.following.add(request.user)
-            # if Follow.objects.filter(follower=request.user, following=user_to_follow).exists():
-            #     Follow.objects.filter(follower=request.user, following=user_to_follow).delete()
+                Follow.objects.create(follower=person, following=request.user)
+            # if request.user in person.following.all():
+            #     person.following.remove(request.user)
             # else:
-            #     Follow.objects.create(follower=request.user, following=user_to_follow)
-        return redirect('accounts:profile', user_to_follow.username)
+            #     person.following.add(request.user)
+        return redirect('accounts:profile', person.username)
     else:
         return HttpResponseBadRequest("Invalid Request Method")
 
@@ -119,10 +123,10 @@ def follow(request, user_name):
 @login_required
 def unfollow(request, user_name):
     if request.method == "POST":
-        user_to_unfollow = User.objects.get(username=user_name)  # unfollow할 대상
-        if Follow.objects.filter(follower=request.user, following=user_to_unfollow).exists():
-            Follow.objects.filter(follower=request.user, following=user_to_unfollow).delete()
-        return redirect('accounts:profile', user_to_unfollow.username)
+        person = User.objects.get(username=user_name)  # unfollow할 대상
+        if Follow.objects.filter(follower=request.user, following=person).exists():
+            Follow.objects.filter(follower=request.user, following=person).delete()
+        return redirect('accounts:profile', person.username)
     else:
         return HttpResponseBadRequest("Invalid Request Method")
     
