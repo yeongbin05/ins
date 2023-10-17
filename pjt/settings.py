@@ -35,7 +35,7 @@ CUSTOM_APPS = [
     # 'chats.apps.ChatsConfig',
     'accounts.apps.AccountsConfig',
     'chats',
-    'posts',
+    # 'posts',
 ]
 
 SYSTEM_APPS = [

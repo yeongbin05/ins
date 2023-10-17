@@ -101,6 +101,7 @@ def SendDirect(request):
 	body = request.POST.get('body')
 	
 	if request.method == 'POST':
+		print(111)
 		to_user = User.objects.get(username=to_user_username)
 		Message.send_message(from_user, to_user, body)
 		return redirect('inbox')
