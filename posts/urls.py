@@ -8,6 +8,6 @@ urlpatterns = [
     path('<int:post_pk>/delete/', views.delete, name="delete"),
     path('<int:post_pk>/update/', views.update, name="update"),
     path('<int:post_pk>/likes/', views.likes, name="likes"),
-
+    path("<int:hash_pk>/hashtag/", views.hashtag, name="hashtag"),
 ]
 
