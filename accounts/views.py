@@ -65,6 +65,7 @@ def logout(request):
 
 def profile(request, user_id):
     posts = Post.objects.all()
+    print('pro')
     profile = User.objects.get(username=user_id)
     context= {
         'posts' : posts,
@@ -74,7 +75,8 @@ def profile(request, user_id):
 
 
 @login_required
-def create(request):
+def create(request,user_id):
+    print(4444)
     if request.method == 'POST':
         form = PostForm(request.POST,request.FILES)
         print(request.POST)

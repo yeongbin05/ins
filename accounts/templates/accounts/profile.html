@@ -25,10 +25,11 @@
   <div class="except-image">
     <div>
       <span>{{profile.username}}</span>
-
+      <div class='follow-message'>
       <!--팔로우 기능-->
       {% if request.user != profile.username %}
       <form action="{% url "accounts:follow" profile.username %}" method="POST">
+        
         {% csrf_token %}
         {% if profile.user not in user.following.all %}
           <input type="submit" value="FOLLOW" class="btn btn-primary">
@@ -39,16 +40,15 @@
       {% endif %}
          
       
-      <button type="button" class="btn btn-light grey-btn">Message</button>
+      <a href="{% url "directs" profile.username %}"><button type="button" class="btn btn-light grey-btn">Message</button></a>
+    </div>
     </div>
     <div>
-      <span>posts</span>
+      
       <span>followers {{ profile.follow_me.all.count }}</span>
       <span>following {{ profile.i_follow.all.count }}</span>
     </div>
-    <div>
-      {{user.username}}
-    </div>
+    
   </div>
 </header>
 <div class="header-bottom">
@@ -67,11 +67,15 @@
 
   </div>
   </div>
-  
-
-<a href="{% url "accounts:create" %}">게시글 올리기</a>
-<a href="{% url "accounts:create" %}">프로필 올리기</a>
-
+<!--내 게시글이면 구현 안됨-->
+{% if request.user != profile.username  %}
+<a href="{% url "accounts:create" user%}">게시글 올리기</a>
+<a href="{% url "accounts:create" user%}">프로필 올리기</a>
+{% else %}
+니 프로필 아니다
+{% endif %}
+{% if request.user.is_authenticated %}
+{% else %}
 <div class="footer-black">
   <div class="white">
   <div class="profile-footer-logo">
@@ -87,5 +91,6 @@
   </div>
 </div>
 </div>
+{% endif %}
 {% endblock content %}
 

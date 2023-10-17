@@ -106,7 +106,9 @@
   }
   
   body {
+    /* background-color: blue; */
     height:963px;
+    height:200vh;
     /* margin-left:25%;
     margin-right:25%; */
   }
@@ -178,6 +180,10 @@
     border:1px solid black;
   }
   
+
+  .follow-message {
+    display:flex;
+  }
   
 
   .pics {
@@ -204,8 +210,9 @@
 
   .footer-black { 
     background-color: black;
+    width:100%;
     opacity:80%;
-    position : sticky;
+    position : fixed;
     bottom : 0;
     /* top:849px; */
     padding : 20px 16px;
