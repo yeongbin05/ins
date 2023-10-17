@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+팔로우 목록
+<hr>
+{% for follower in followers  %}
+{{follower}}
+<hr>
+{% endfor %}
+{% endblock content %}
+

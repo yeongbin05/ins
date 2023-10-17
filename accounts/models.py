@@ -22,12 +22,21 @@ class User(AbstractUser):
     # is_active = models.BooleanField(null=True)
     following = models.ManyToManyField('self', through='Follow', symmetrical=False, blank=True)
 
+    
+
+
 
 class Post(models.Model):
     # content = models.ImageField()
     content = models.ImageField(upload_to=articles_image_path)
     text = models.CharField(max_length=300)
     user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
+    
+class Comment(models.Model):
+    post = models.ForeignKey(Post,on_delete=models.CASCADE)
+    content = models.CharField(max_length=200, verbose_name='댓글')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 
@@ -39,5 +48,6 @@ class Follow(models.Model):
     class Meta:
         unique_together = ('follower', 'following')
     
-
+    def __str__(self):
+        return self.following.username
 

@@ -4,8 +4,8 @@ from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest
-from .forms import CustomUserChangeForm,CustomUserCreationForm,PostForm
-from .models import User, Post, Follow
+from .forms import CustomUserChangeForm,CustomUserCreationForm,PostForm,CommentForm
+from .models import User, Post, Follow,Comment
 # Create your views here.
 def index(request):
     posts = Post.objects.all()
@@ -64,12 +64,21 @@ def logout(request):
     
 
 def profile(request, user_id):
+    
+    user = User.objects.get(username=user_id)  # follow할 대상
+
+    followers = Follow.objects.filter(follower=user)
+    followings = Follow.objects.filter(following=user)
+    
     posts = Post.objects.all()
-    print('pro')
+    
     profile = User.objects.get(username=user_id)
     context= {
         'posts' : posts,
         'profile':profile,
+        'followers' : followers,
+        'followings' : followings,
+        'comment_form' : CommentForm,
     }
     return render(request,'accounts/profile.html',context)
 
@@ -128,3 +137,29 @@ def unfollow(request, user_name):
     
 
 ##########################
+
+def test(request,user_name):
+            
+    user = User.objects.get(username=user_name)  # follow할 대상
+
+    followers = Follow.objects.filter(follower=user)
+    context = {
+        'followers' : followers,
+    }
+    return render(request,'accounts/test.html', context)
+
+
+# def comments_create(request,pk):
+#     post = Post.objects.get(pk=pk)
+#     comment_form = CommentForm(request.POST)
+#     if comment_form.is_valid():
+#         comment = comment_form.save(commit=False)
+#         comment.post = post
+#         comment_form.save()
+#         return redirect('accounts:profile',post.pk)
+    
+#     context = {
+#         'post' : post,
+#         'comment_form' : comment_form,
+#     }
+#     return render(request,'accounts/profile.html',context)
