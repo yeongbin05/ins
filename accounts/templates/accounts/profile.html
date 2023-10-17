@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
 <div class="custom-navbar">
-  
+
   <a href="{% url "accounts:index" %}">
   <img src="{% static 'logo.png' %}" alt="1" class="navbar-logo"></a>
   {% if request.user.is_authenticated %}
@@ -10,7 +10,6 @@
 
   {% else  %}
  <div class="log-sin-nav">
-    
     <a class="btn btn-primary nav-btn" href="{% url "accounts:login" %}">로그인</a>
     <div>
       <a href="{% url "accounts:signup" %}">가입하기</a>
@@ -24,26 +23,30 @@
   <div class='profile-image'><img src="" class ='profile' alt=""></div>
   <div class="except-image">
     <div>
-      <span>{{profile.username}}</span>
+      <span>{{ person }}</span>
+      {% if request.user != person %}
       <div class='follow-message'>
-      <!--팔로우 기능-->
-      {% if request.user != profile.username %}
-      <form action="{% url "accounts:follow" profile.username %}" method="POST">
-        
-        {% csrf_token %}
-        {% if profile.user not in user.following.all %}
-          <input type="submit" value="FOLLOW" class="btn btn-primary">
-        {% else %}
-          <input type="submit" value="FOLLOW" class="btn btn-success">
-        {% endif %}
-      </form>
+        <!--팔로우 기능-->
+        <form action="{% url "accounts:follow" person.username %}" method="POST">
+          {% csrf_token %}
+          {% if request.user not in followers %}
+            <input type="submit" value="FOLLOW" class="btn btn-light">
+          {% else %}
+            <input type="submit" value="FOLLOW" class="btn btn-primary">
+          {% endif %}
+
+        </form>
+        <!--DM 기능-->
+        <a href="{% url "directs" person.username %}"><button type="button" class="btn btn-light grey-btn">Message</button></a>
+      </div>
+      {% else %}
+
       {% endif %}
-         
-      
-      <a href="{% url "directs" profile.username %}"><button type="button" class="btn btn-light grey-btn">Message</button></a>
     </div>
-    </div>
+        
+
     <div>
+
       
       {% comment %} <span >followers {{ profile.follow_me.all.count }}</span> {% endcomment %}
       {% comment %} <a href="" onclick="openModal()">followers {{ profile.follow_me.all.count }}</a> {% endcomment %}
@@ -52,6 +55,23 @@
       <a href="javascript:void(0)" onclick="openfModal()">following {{  profile.i_follow.all.count }}</a>
 
       <span>following {{ profile.i_follow.all.count }}</span>
+
+      
+      
+      <!-- 수 / 목록  -->
+      <span>followers {{ followers.count }}</span>
+      <p>host를 팔로우한사람 명단</p>
+      {% for id in followers %}               <!--host를 팔로우한 Follow테이블 데이터들에서 -->
+        <p>{{ id.following }}</p>             <!--following값이 host를 팔로우한 사람들-->
+      {% endfor %}
+      <br>
+      <span>following {{ followings.count }}</span>
+      <p>host가 팔로잉한사람 명단</p>
+      {% for id in followings %}
+        <p>{{ id.follower }}</p>
+      {% endfor %}
+
+
     </div>
     
   </div>
@@ -64,6 +84,7 @@
 
   <div class="pics">
     
+
     
   {% for post in posts %}
   <!-- 이미지를 클릭하면 해당 모달 팝업 창 열기 -->
@@ -92,12 +113,19 @@
   
 
 
+   
+  {% for post in person.post_set.all  %}
+  
+  <img src="{{ post.content.url }}" alt="" class="image">
+  {% endfor %} 
+
+
   </div>
   </div>
 <!--내 게시글이면 구현 안됨-->
-{% if request.user != profile.username  %}
-<a href="{% url "accounts:create" user%}">게시글 올리기</a>
-<a href="{% url "accounts:create" user%}">프로필 올리기</a>
+{% if request.user != person %}
+<a href="{% url "posts:create" %}">게시글 올리기</a>
+{% comment %} <a href="{% url "accounts:create" user%}">프로필 올리기</a> {% endcomment %}
 {% else %}
 니 프로필 아니다
 {% endif %}

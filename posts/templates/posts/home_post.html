@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>HOME용 게시글 탬플릿</h1>
+
+  <div>
+  {% if post.image %}
+    <img src="{{ post.image_file.url }}" class="card-img-top" alt="post_img">
+  {% endif %}
+  </div>
+  <div>
+    {% if request.user != post.user %}
+      <form action="{% url "posts:likes" post.pk %}" method="POST">
+      {% csrf_token %}
+      {% if request.user in post.like_users.all %}
+        <button type="submit" style="border:none; background:none;">
+          <i class="fa-solid fa-heart" style="color: #9d51db;"></i>
+        </button>
+      {% else %}
+        <button type="submit" style="border:none; background:none;">
+          <i class="fa-regular fa-heart" style="color: #9d51db;"></i>
+        </button>
+      {% endif %}
+    </form>
+    {% endif %}
+    <p>좋아요 수 : {{ post.like_users.all.count }} </p>
+  </div>
+  
+{% endblock content %}

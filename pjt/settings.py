@@ -31,11 +31,12 @@ ALLOWED_HOSTS = []
 # Application definition
 CUSTOM_APPS = [
     "bootstrap5",
+    'imagekit',
     # 'common.apps.CommonConfig',
     # 'chats.apps.ChatsConfig',
     'accounts.apps.AccountsConfig',
     'chats',
-    # 'posts',
+    'posts',
 ]
 
 SYSTEM_APPS = [
@@ -135,6 +136,7 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 AUTH_USER_MODEL = 'accounts.User'
 
 
