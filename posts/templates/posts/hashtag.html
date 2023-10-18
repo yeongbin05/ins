@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>해시태그 explore</h1>
+  <h3>#{{ hashtag.content }}</h3>
+  <p>{{ hashtag.post_set.all.count }}개의 게시글</p>
+  
+{% endblock content %}

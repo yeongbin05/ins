@@ -9,6 +9,7 @@ urlpatterns = [
     path('<int:post_pk>/update/', views.update, name="update"),
     path('<int:post_pk>/likes/', views.likes, name="likes"),
     # path('display/',views.display,name='display'),
+    path("<int:hash_pk>/hashtag/", views.hashtag, name="hashtag"),
 
 ]
 

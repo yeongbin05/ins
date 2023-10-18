@@ -1,8 +1,11 @@
-from django.shortcuts import render, redirect
-from .models import Post
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Hashtag, Post
 from .forms import PostForm
 from django.contrib.auth.decorators import login_required
 import mimetypes
+import re
+
+
 # Create your views here.
 @login_required
 def index(request):
@@ -20,9 +23,15 @@ def create(request):
         if form.is_valid():
             post = form.save(commit=False)
             post.user = request.user
-            form.save()
+            post.save()
+            # 해시태그 찾아서 테이블에 넣기
+            tags = re.findall(r'#[^\s#,\\]+', post.content)
+            words = [tag[1:] for tag in tags]
+            for word in words:
+                hashtag = Hashtag.objects.get_or_create(content=word)
+                post.hashtags.add(hashtag[0].pk)          
             return redirect('accounts:profile',request.user)
-            # return redirect('posts:index')
+
     else:
         form = PostForm()
     context = {
@@ -65,6 +74,7 @@ def likes(request, post_pk):
             post.like_users.add(request.user)
     return redirect('posts:index')
 
+
 def comment_create(request):
     pass
 
@@ -85,3 +95,14 @@ def comment_create(request):
 #         media_type = 'unknown'
     
 #     return render(request, 'media_display.html', {'media_file': media_file, 'media_type': media_type})
+
+
+def hashtag(request, hash_pk):
+    hashtag = get_object_or_404(Hashtag, pk=hash_pk)
+    hashtag_posts = hashtag.post_set.all().order_by('updated_at')
+    context = {
+        'hashtag': hashtag,
+        'hashtag_posts' : hashtag_posts,
+    }
+    return render(request, 'posts/hashtag.html', context)
+
