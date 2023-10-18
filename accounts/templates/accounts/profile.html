@@ -7,6 +7,7 @@
   <img src="{% static 'logo.png' %}" alt="1" class="navbar-logo"></a>
   {% if request.user.is_authenticated %}
   <a class="btn btn-primary nav-btn" href="{% url "accounts:logout" %}">로그아웃</a>
+  <a href="{% url "accounts:profile" request.user  %}">내 프로필</a>
 
   {% else  %}
  <div class="log-sin-nav">
@@ -50,15 +51,15 @@
       
       {% comment %} <span >followers {{ profile.follow_me.all.count }}</span> {% endcomment %}
       {% comment %} <a href="" onclick="openModal()">followers {{ profile.follow_me.all.count }}</a> {% endcomment %}
+      <strong>게시물 {{person.post_set.all.count}}</strong>
+      <a href="javascript:void(0)" onclick="openModal()">팔로워 {{ followers.count }}</a>
+      <a href="javascript:void(0)" onclick="openfModal()">팔로우 {{ followings.count }}</a>
 
-      <a href="javascript:void(0)" onclick="openModal()">followers {{ profile.follow_me.all.count }}</a>
-      <a href="javascript:void(0)" onclick="openfModal()">following {{  profile.i_follow.all.count }}</a>
-
-      <span>following {{ profile.i_follow.all.count }}</span>
+      {% comment %} <span>following {{ profile.i_follow.all.count }}</span> {% endcomment %}
 
       
       
-      <!-- 수 / 목록  -->
+      {% comment %} <!-- 수 / 목록  -->
       <span>followers {{ followers.count }}</span>
       <p>host를 팔로우한사람 명단</p>
       {% for id in followers %}               <!--host를 팔로우한 Follow테이블 데이터들에서 -->
@@ -69,13 +70,31 @@
       <p>host가 팔로잉한사람 명단</p>
       {% for id in followings %}
         <p>{{ id.follower }}</p>
-      {% endfor %}
+      {% endfor %} {% endcomment %}
 
 
     </div>
     
   </div>
 </header>
+{% for post in  person.post_set.all %}
+{% if post.image.url|slice:'-4:' == '.mp4'  %}
+<div class="video">
+    <video autoplay="autoplay" controls="controls" preload="preload">
+      <source src="{{post.image.url}}" type="video/mp4"></source>
+    </video>
+</div>
+{% endif %}
+{% endfor %}
+{% comment %} {% for post in  person.post_set.all %}
+{{post.image.url}}
+{% if post.image.url|slice:'-4:' == '.mp4'  %}
+<video autoplay="autoplay" controls="controls" preload="preload">
+  <source src="{{post.image.url}}" type="video/mp4"></source>
+</video>
+
+{% endif %}
+{% endfor %} {% endcomment %}
 <div class="header-bottom">
   게시물
 </div>
@@ -86,48 +105,87 @@
     
 
     
-  {% for post in posts %}
-  <!-- 이미지를 클릭하면 해당 모달 팝업 창 열기 -->
-  <img src="{{ post.content.url }}" alt="" class="image" onclick="openImgModal('{{ post.content.url }}', '{{ forloop.counter }}')">
+    
+    {% if request.user.is_authenticated %}
+    {% for post in person.post_set.all  %}
 
-  <!-- 고유한 id를 가진 모달 팝업 창 -->
+    <img src="{{ post.image.url }}" alt="" class="image" onclick="openImgModal('{{ post.image.url }}', '{{ forloop.counter }}')">
   <div id="imgModal{{ forloop.counter }}" class="modal">
+    
     <div class="img-modal-content">
-      <!-- 모달 닫기 버튼 -->
-      {% comment %} <span class="close" onclick="closeImgModal('{{ forloop.counter }}')"></span> {% endcomment %}
-      
+     
       <!-- 이미지 표시 -->
       <div class="modal-img-text">
-      <img src="{{ post.content.url }}" alt="" class="image">
-      <div>
-        {{profile.username}}
-      <p>{{post.text}}</p>
-      {{comment_form}}
-    </div>
-    </div>
+        
+
+        
+        {% comment %} {{post.image.url}} {% endcomment %}
+        {% if post.image.url|slice:'-4:' == '.mp4'  %}
+        <video autoplay="autoplay" controls="controls" preload="preload">
+          <source src="{{post.image.url}}" type="video/mp4"></source>
+        </video>
+        {% else %}
+        <img src="{{ post.image.url }}" alt="" class="image">
+        {% endif %}
+        
+        
+        
+        
+        
+        
+      </div>
+
+      <div class="modal-img-right">
+         
+          {{person}}
+        <p>{{post.content}}</p>
+        <form action="">
+          {{comment_form}}
+          <input type="submit">
+        </form>
+        {% if request.user == person %}
+        <form action="{% url "posts:delete" post.pk%}" method='POST'>
+          {% csrf_token %}
+          <input type="submit" value='delete'>
+        </form>
+        {% endif %}
+      </div>
+      
     </div>
   </div>
-{% endfor %}
+  {% endfor %}
+  {% else %}
+  {% for post in person.post_set.all  %}
+  <img src="{{ post.image.url }}" alt="" class="image" onclick="openLogInModal()">
+  
+  {% endfor %}
+  {% endif %}
+  <!-- 이미지를 클릭하면 해당 모달 팝업 창 열기 -->
+  
+  
+  
+ 
+
+  <!-- 고유한 id를 가진 모달 팝업 창 -->
+  
+  
+
+   
+
  
  
   
 
 
    
-  {% for post in person.post_set.all  %}
   
-  <img src="{{ post.content.url }}" alt="" class="image">
-  {% endfor %} 
-
-
   </div>
   </div>
 <!--내 게시글이면 구현 안됨-->
-{% if request.user != person %}
+{% if request.user == person %}
 <a href="{% url "posts:create" %}">게시글 올리기</a>
 {% comment %} <a href="{% url "accounts:create" user%}">프로필 올리기</a> {% endcomment %}
-{% else %}
-니 프로필 아니다
+
 {% endif %}
 {% if request.user.is_authenticated %}
 {% else %}
@@ -148,27 +206,70 @@
 </div>
 {% endif %}
 
-{% comment %} follower모달 {% endcomment %}
+<!--모달-->
 <div id="myModal" class="modal">
   <div class="modal-content">
-    {% comment %} <span class="close" onclick="closeModal">x</span> {% endcomment %}
-    {% for follower in followers  %}
-      {{follower}}
+    
+      {% for id in followers %}               <!--host를 팔로우한 Follow테이블 데이터들에서 -->
+        <a href="{% url "accounts:profile" id.following %}">{{ id.following }}</a>             <!--following값이 host를 팔로우한 사람들-->
+      
       <hr>
       {% endfor %}
   </div>
 </div>
+
 <div id="myfModal" class="modal">
   <div class="modal-content">
     
-    {% for follow in followings  %}
-      {{follow}}
-      <hr>
+    {% for id in followings %}
+        <a href="{% url "accounts:profile" id.follower %}">{{ id.follower }}</a>
       {% endfor %}
+      <hr>
+      
   </div>
 </div>
 
-
+<!--로그인모달-->
+<div id="loginModal" class="login-modal">
+  <div class="login-modal-content">
+    
+    
+      <div class="login-card-modal">
+        
+        <img src="{% static 'logo.png' %}" alt="1" class="index-logo-img">
+        <form action="{% url "accounts:login" %}" method='POST'>
+          {% csrf_token %}
+          {% for field in form %}
+          <div class="form-group">
+            {% if field.label == 'Username' %}
+            <input
+              class="form-control log-in-form"
+              
+              placeholder="전화번호, 사용자 이름 또는 이메일"
+              name="{{ field.name }}"
+            />
+            {% else %}
+            <input
+              class="form-control log-in-form"
+              placeholder=" 비밀번호 "
+              name="{{ field.name }}"
+            />
+            
+            {% endif %}
+            
+          </div>
+          {% endfor %}
+          <input type="submit" value = '로그인' class='btn btn-primary signup-btn'>
+        </form>
+      </div>
+      <div class="login-card-modal-bottom" >
+        <span>계정이 없으신가요?</span>
+        <span><a href="{% url "accounts:signup" %}">가입하기</a></span>
+      </div>
+      
+      
+  </div>
+</div>
 <script>
   // 모달 열기
   function openModal() {
@@ -184,6 +285,12 @@
     if (event.target === document.getElementById('myModal')) {
       closeModal();
     }
+    else if (event.target === document.getElementById('myfModal')) {
+      closefModal();
+    }
+    else if (event.target === document.getElementById('loginModal')) {
+      closeLogInModal();
+    }
   }
   
   function openfModal() {
@@ -194,13 +301,15 @@
   function closefModal() {
     document.getElementById('myfModal').style.display = 'none';
   }
-  // 모달 외부를 클릭하면 모달 닫기
-  window.onclick = function(event) {
-    if (event.target === document.getElementById('myfModal')) {
-      closefModal();
-    }
+  function openLogInModal() {
+    document.getElementById('loginModal').style.display = 'block';
   }
-  
+
+  // 모달 닫기
+  function closeLogInModal() {
+    document.getElementById('loginModal').style.display = 'none';
+  }
+
 function openImgModal(imgUrl, modalNumber) {
   // 이미지 URL을 모달에 설정
   const imgModal = document.getElementById(`imgModal${modalNumber}`);

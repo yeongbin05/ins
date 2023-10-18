@@ -3,7 +3,7 @@ from .models import User
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm,UserChangeForm
 
-from .models import Post,Comment
+# from .models import Post,Comment
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -16,12 +16,12 @@ class CustomUserChangeForm(UserChangeForm):
         model = get_user_model()
 
 
-class PostForm(forms.ModelForm):
-    class Meta:
-        model = Post
-        fields = '__all__'
+# class PostForm(forms.ModelForm):
+#     class Meta:
+#         model = Post
+#         fields = '__all__'
 
-class CommentForm(forms.ModelForm):
-    class Meta:
-        model = Comment
-        fields = ('content',)
+# class CommentForm(forms.ModelForm):
+#     class Meta:
+#         model = Comment
+#         fields = ('content',)

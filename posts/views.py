@@ -2,7 +2,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Hashtag, Post
 from .forms import PostForm
 from django.contrib.auth.decorators import login_required
+import mimetypes
 import re
+
 
 # Create your views here.
 @login_required
@@ -28,7 +30,8 @@ def create(request):
             for word in words:
                 hashtag = Hashtag.objects.get_or_create(content=word)
                 post.hashtags.add(hashtag[0].pk)          
-            return redirect('posts:index')
+            return redirect('accounts:profile',request.user)
+
     else:
         form = PostForm()
     context = {
@@ -41,7 +44,7 @@ def create(request):
 def delete(request, post_pk):
     post = Post.objects.get(pk=post_pk)
     post.delete()
-    return redirect('posts:index')
+    return redirect('accounts:profile',request.user)
 
 
 @login_required
@@ -72,6 +75,27 @@ def likes(request, post_pk):
     return redirect('posts:index')
 
 
+def comment_create(request):
+    pass
+
+
+# def display(request, media_id):
+#     media_file = Post.objects.get(id=media_id)
+    
+#     mime_type, _ = mimetypes.guess_type(media_file.file.path)
+    
+#     if mime_type:
+#         if mime_type.startswith('image'):
+#             media_type = 'image'
+#         elif mime_type.startswith('video'):
+#             media_type = 'video'
+#         else:
+#             media_type = 'unknown'
+#     else:
+#         media_type = 'unknown'
+    
+#     return render(request, 'media_display.html', {'media_file': media_file, 'media_type': media_type})
+
 
 def hashtag(request, hash_pk):
     hashtag = get_object_or_404(Hashtag, pk=hash_pk)
@@ -81,3 +105,4 @@ def hashtag(request, hash_pk):
         'hashtag_posts' : hashtag_posts,
     }
     return render(request, 'posts/hashtag.html', context)
+

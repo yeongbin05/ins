@@ -52,7 +52,18 @@
     align-items: center;
     margin-bottom: 10px;
   }
-  
+  .login-card-modal {
+    box-sizing : content-box;
+    width:348px;
+    height:379.984px;
+    /* padding-top: 10px; */
+    padding-bottom:10px;
+    border-bottom: 1px solid lightgrey;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* margin-bottom: 10px; */
+  }
   .login-block {
     background-color: lightgrey;
   }
@@ -68,7 +79,11 @@
     text-align: center;
     
   }
- 
+ .login-card-modal-bottom {
+  width:348px;
+  text-align: center;
+  margin-top: 10px;
+ }
   
   a {
     color : #0095F6;
@@ -189,7 +204,9 @@
   .pics {
     width:100%;
     display: grid;
+    /* grid-auto-columns: 309px; */
     grid-template-columns: repeat(3,1fr);
+
     grid-auto-rows: 309px;
     grid-gap :4px;
     /* margin-left:400px; */
@@ -387,8 +404,40 @@
 
 .modal-img-text {
   display : flex;
+  flex :2;
 }
-/* 
-body {
+.modal-img-right {
+  flex :1;
+  padding-left: 20px;
+}
+/* body {
   background-color: blue;
-} */
+}  */
+
+.login-modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.7);
+}
+
+.login-modal-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 400px;
+  height: 466.984px;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 20px;
+}
+
+video {
+  width:309px;
+  height:309px;
+}
