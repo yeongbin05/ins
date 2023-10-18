@@ -395,20 +395,26 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width:700px;
-  height:700px;
+  width:1233px;
+  height:914px;
   transform: translate(-50%, -50%);
   background-color: #fff;
   padding: 20px;
 }
 
-.modal-img-text {
+.modal-img-image {
   display : flex;
-  flex :2;
+  width:733px;
 }
 .modal-img-right {
-  flex :1;
+  width:500px;
   padding-left: 20px;
+}
+
+.modal-follow-btn {
+  background-color: white;
+  color:blue;
+  border : 0px;
 }
 /* body {
   background-color: blue;

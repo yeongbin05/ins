@@ -78,10 +78,30 @@ def profile(request, user_name):
     followers = Follow.objects.filter(follower=person)   # person을 팔로우한 follow 목록
     followings = Follow.objects.filter(following=person) # person이 팔로잉한 follow 목록
     form = AuthenticationForm()
+   
+    print(followers)
+    followers_list=list(followers)
+    print(followers_list)
+    
+    # for follower in followers:
+    #     follow.append(follower)
+    #     follow.append(str(follower).split("Follow: ")[1][:-1] for follower in follow]
+    usernames = [str(follower).split("Follow: ") for follower in followers_list]
+    users = [item for sublist in usernames for item in sublist]
+    # for i in range(len(followers)):
+    #     follow.append(str(followers[i].split("Follow: ")))
+    print(usernames)
+    print(users)
+    # print(usernames,222)
+    # 수정
+    follower_ids = followings.values_list('following_id', flat=True)
+
+
     context= {
         'person':person,
         'followers':followers,
         'followings':followings,
+        'users' : users,
         'comment_form' : CommentForm,
         'form' : form,
 
