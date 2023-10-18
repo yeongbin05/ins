@@ -6,12 +6,13 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest
 ####
-from .forms import CustomUserChangeForm,CustomUserCreationForm,PostForm,CommentForm
-from .models import User, Post, Follow,Comment
-####
 from .forms import CustomUserChangeForm,CustomUserCreationForm
 from .models import User, Follow
-from posts.models import Post
+####
+
+from .models import User, Follow
+from posts.models import Post,Comment
+from posts.forms import CommentForm
 #####
 
 # Create your views here.
@@ -76,11 +77,13 @@ def profile(request, user_name):
     person = User.objects.get(username=user_name)
     followers = Follow.objects.filter(follower=person)   # person을 팔로우한 follow 목록
     followings = Follow.objects.filter(following=person) # person이 팔로잉한 follow 목록
+    form = AuthenticationForm()
     context= {
         'person':person,
         'followers':followers,
         'followings':followings,
         'comment_form' : CommentForm,
+        'form' : form,
 
     }
     return render(request,'accounts/profile.html',context)
