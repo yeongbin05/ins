@@ -30,10 +30,11 @@
         <!--팔로우 기능-->
         <form action="{% url "accounts:follow" person.username %}" method="POST">
           {% csrf_token %}
-          {% if request.user not in followers %}
-            <input type="submit" value="FOLLOW" class="btn btn-light">
+          {% comment %} {% if request.user not in followers %} {% endcomment %}
+          {% if request.user.username  in users %}
+            <input type="submit" value="팔로우 취소" class="btn btn-light">
           {% else %}
-            <input type="submit" value="FOLLOW" class="btn btn-primary">
+            <input type="submit" value="팔로우" class="btn btn-primary">
           {% endif %}
 
         </form>
@@ -49,35 +50,26 @@
     <div>
 
       
-      {% comment %} <span >followers {{ profile.follow_me.all.count }}</span> {% endcomment %}
-      {% comment %} <a href="" onclick="openModal()">followers {{ profile.follow_me.all.count }}</a> {% endcomment %}
+
       <strong>게시물 {{person.post_set.all.count}}</strong>
+      {% if request.user.is_authenticated %}
       <a href="javascript:void(0)" onclick="openModal()">팔로워 {{ followers.count }}</a>
       <a href="javascript:void(0)" onclick="openfModal()">팔로우 {{ followings.count }}</a>
-
-      {% comment %} <span>following {{ profile.i_follow.all.count }}</span> {% endcomment %}
-
+      {% else %}
+      <a href="javascript:void(0)" onclick="openLogInModal()">팔로워 {{ followers.count }}</a>
+      <a href="javascript:void(0)" onclick="openLogInModal()">팔로우 {{ followings.count }}</a>
       
+      {% endif %}
       
-      {% comment %} <!-- 수 / 목록  -->
-      <span>followers {{ followers.count }}</span>
-      <p>host를 팔로우한사람 명단</p>
-      {% for id in followers %}               <!--host를 팔로우한 Follow테이블 데이터들에서 -->
-        <p>{{ id.following }}</p>             <!--following값이 host를 팔로우한 사람들-->
-      {% endfor %}
-      <br>
-      <span>following {{ followings.count }}</span>
-      <p>host가 팔로잉한사람 명단</p>
-      {% for id in followings %}
-        <p>{{ id.follower }}</p>
-      {% endfor %} {% endcomment %}
+
+     
 
 
     </div>
     
   </div>
 </header>
-{% for post in  person.post_set.all %}
+{% comment %} {% for post in  person.post_set.all %}
 {% if post.image.url|slice:'-4:' == '.mp4'  %}
 <div class="video">
     <video autoplay="autoplay" controls="controls" preload="preload">
@@ -85,37 +77,34 @@
     </video>
 </div>
 {% endif %}
-{% endfor %}
-{% comment %} {% for post in  person.post_set.all %}
-{{post.image.url}}
-{% if post.image.url|slice:'-4:' == '.mp4'  %}
-<video autoplay="autoplay" controls="controls" preload="preload">
-  <source src="{{post.image.url}}" type="video/mp4"></source>
-</video>
-
-{% endif %}
 {% endfor %} {% endcomment %}
+
 <div class="header-bottom">
   게시물
+  
 </div>
-
-
-
   <div class="pics">
-    
-
-    
-    
     {% if request.user.is_authenticated %}
     {% for post in person.post_set.all  %}
-
+    {% if post.image.url|slice:'-4:' == '.mp4'  %}
+    
+    <div class="icon-image-div">
+      <i class="fa-solid fa-video video-icon"></i>
+      <video src="{{ post.image.url }}" alt="" class="image" onclick="openImgModal('{{ post.image.url }}', '{{ forloop.counter }}')"></video>
+    </div>
+    
+    {% else %}
+    <div class="icon-image-div">
+    <i class="fa-regular fa-image image-icon"></i>
     <img src="{{ post.image.url }}" alt="" class="image" onclick="openImgModal('{{ post.image.url }}', '{{ forloop.counter }}')">
+    </div>
+    {% endif %}
   <div id="imgModal{{ forloop.counter }}" class="modal">
     
     <div class="img-modal-content">
      
       <!-- 이미지 표시 -->
-      <div class="modal-img-text">
+      <div class="modal-img-image">
         
 
         
@@ -136,8 +125,32 @@
       </div>
 
       <div class="modal-img-right">
+       
+          
+
+          
+          
+          {% if request.user != person %}
+      <div class='follow-message'>
+        
+         {{person}}
+         {% if request.user.username not in users %}
          
-          {{person}}
+        
+         
+        <form action="{% url "accounts:follow" person.username %}" method="POST">
+          {% csrf_token %}
+          
+            <input type="submit" value="팔로우" class="modal-follow-btn">
+          
+          {% endif %}
+
+        </form>
+        <!--DM 기능-->
+      </div>
+      {% else %}
+
+      {% endif %}
         <p>{{post.content}}</p>
         <form action="">
           {{comment_form}}
@@ -153,30 +166,50 @@
       
     </div>
   </div>
-  {% endfor %}
-  {% else %}
-  {% for post in person.post_set.all  %}
-  <img src="{{ post.image.url }}" alt="" class="image" onclick="openLogInModal()">
   
   {% endfor %}
+  <div class="want-more">
+   <strong> {{person}}님의 게시물 더 보기</strong>
+   
+  </div>
+  {% else %}
+  
+  
+  <!-- 로그인 안 했으면 로그인 모달 띄우기-->
+  {% for post in person.post_set.all  %}
+  
+  {% comment %} <img src="{{ post.image.url }}" alt="" class="image" onclick="openLogInModal()"> {% endcomment %}{% if post.image.url|slice:'-4:' == '.mp4'  %}
+    
+    <div class="icon-image-div">
+      <i class="fa-solid fa-video video-icon"></i>
+      <video src="{{ post.image.url }}" alt="" class="image" onclick="openLogInModal()"></video>
+    </div>
+    {% comment %} <div class="icon-image-div">
+      <i class="fa-solid fa-video video-icon"></i>
+      <video src="{{ post.image.url }}" alt="" class="image" onclick="openImgModal('{{ post.image.url }}', '{{ forloop.counter }}')"></video>
+    </div> {% endcomment %}
+    
+    {% else %}
+    <div class="icon-image-div">
+    <i class="fa-regular fa-image image-icon"></i>
+    <img src="{{ post.image.url }}" alt="" class="image" onclick="openLogInModal()">
+    </div>
+    {% comment %} <div class="icon-image-div">
+    <i class="fa-regular fa-image image-icon"></i>
+    <img src="{{ post.image.url }}" alt="" class="image" onclick="openImgModal('{{ post.image.url }}', '{{ forloop.counter }}')">
+    </div> {% endcomment %}
+    {% endif %}
+  
+  {% endfor %}
+  <div class="want-more">
+    <strong> {{person}}님의 게시물 더 보기</strong>
+    
+   </div>
   {% endif %}
   <!-- 이미지를 클릭하면 해당 모달 팝업 창 열기 -->
   
   
   
- 
-
-  <!-- 고유한 id를 가진 모달 팝업 창 -->
-  
-  
-
-   
-
- 
- 
-  
-
-
    
   
   </div>
@@ -207,6 +240,7 @@
 {% endif %}
 
 <!--모달-->
+
 <div id="myModal" class="modal">
   <div class="modal-content">
     
@@ -231,8 +265,9 @@
 
 <!--로그인모달-->
 <div id="loginModal" class="login-modal">
+  
   <div class="login-modal-content">
-    
+     <div class='x'><i class="fa-solid fa-xmark" onclick="closeLogInModal()"></i></div>
     
       <div class="login-card-modal">
         
@@ -259,7 +294,7 @@
             
           </div>
           {% endfor %}
-          <input type="submit" value = '로그인' class='btn btn-primary signup-btn'>
+          <input type="submit" value = '로그인' class='  signup-btn'>
         </form>
       </div>
       <div class="login-card-modal-bottom" >
