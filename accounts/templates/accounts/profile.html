@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load make_link %}  <!--해시태그-->
 {% block content %}
 <div class="custom-navbar">
 
@@ -125,8 +126,7 @@
       </div>
 
       <div class="modal-img-right">
-       
-          
+        
 
           
           
@@ -146,12 +146,12 @@
           {% endif %}
 
         </form>
-        <!--DM 기능-->
+
       </div>
       {% else %}
 
       {% endif %}
-        <p>{{post.content}}</p>
+      <p>{{ post|word_link|safe }}</p>   <!--해시태그 필터-->
         <form action="">
           {{comment_form}}
           <input type="submit">

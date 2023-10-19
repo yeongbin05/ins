@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Hashtag, Post
-from .forms import PostForm
+from .forms import PostForm, CommentForm
 from django.contrib.auth.decorators import login_required
 import mimetypes
 import re
@@ -109,6 +109,7 @@ def hashtag(request, hash_pk):
     context = {
         'hashtag': hashtag,
         'hashtag_posts' : hashtag_posts,
+        'comment_form' : CommentForm,
     }
     return render(request, 'posts/hashtag.html', context)
 

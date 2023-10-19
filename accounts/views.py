@@ -17,6 +17,8 @@ from posts.forms import CommentForm
 
 # Create your views here.
 def index(request):
+    if request.user.is_authenticated:
+        return redirect('posts:index')
     posts = Post.objects.all()
     form = AuthenticationForm()
     context= {
@@ -68,7 +70,7 @@ def login(request):
 def logout(request):
     if request.user.is_authenticated:
         auth_logout(request)
-        return redirect('accounts:index')
+        return redirect('accounts:login')
     
 
 

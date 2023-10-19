@@ -1,9 +1,9 @@
-{% extends "base.html" %}
+{% extends "base2.html" %}
 
 {% load static %}
 
 {% block content %}
-{% if request.user.is_authenticated %}
+{% comment %} {% if request.user.is_authenticated %}
 <h1>로그인 됐다</h1>
 {{user}}
 <a href="{% url "accounts:logout" %}">logout</a>
@@ -11,7 +11,7 @@
 <a href="{% url "inbox" %}">채팅</a>
 
 
-{% else %}
+{% else %} {% endcomment %}
 <div class='index-body'>
   <div class="index-left">
     <div class="slideshow-container">
@@ -83,7 +83,7 @@ function showSlides() {
     setTimeout(showSlides, 5000); // 애니메이션 간격을 5초로 설정
 }
 </script>
-{% endif %}
+{% comment %} {% endif %} {% endcomment %}
 
 {% endblock content %}
 
