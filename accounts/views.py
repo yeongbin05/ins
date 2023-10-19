@@ -76,12 +76,13 @@ def profile(request, user_name):
     User = get_user_model()
     person = User.objects.get(username=user_name)
     followers = Follow.objects.filter(follower=person)   # person을 팔로우한 follow 목록
+    print(followers)
     followings = Follow.objects.filter(following=person) # person이 팔로잉한 follow 목록
     form = AuthenticationForm()
    
-    print(followers)
+    # print(followers)
     followers_list=list(followers)
-    print(followers_list)
+    # print(followers_list)
     
     # for follower in followers:
     #     follow.append(follower)
@@ -90,8 +91,15 @@ def profile(request, user_name):
     users = [item for sublist in usernames for item in sublist]
     # for i in range(len(followers)):
     #     follow.append(str(followers[i].split("Follow: ")))
-    print(usernames)
-    print(users)
+    # print(usernames)
+    # print(users)
+    a = []
+    for follower in followers:
+        a.append(follower.following.username)
+    print(a)
+
+
+
     # print(usernames,222)
     # 수정
     follower_ids = followings.values_list('following_id', flat=True)

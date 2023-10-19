@@ -1,9 +1,12 @@
 {% extends "base.html" %}
 {% load bootstrap5 %}
+{% load static %}
 {% block content %}
+{% comment %}
+<div>
 <form action="{% url "accounts:signup" %}" method="POST" class= 'email-signup'>
   {% csrf_token %}
-  {% comment %} {{form.as_p}} {% endcomment %}
+   {{form.as_p}} 
   {% bootstrap_form form layout='horizontal' %}
   <input type="submit" value='가입' class='btn btn-primary signup-btn'>
 </form>
@@ -11,6 +14,63 @@
   계정이 있으신가요?
   <span><a href="{% url "accounts:login" %}">로그인</a></span>
 </div>
+ </div> {% endcomment %}
+<div class='signup-page'>
+  {% comment %} <div class='signup-card'> {% endcomment %}
+<form action="{% url "accounts:signup" %}" method='POST'  class= 'email-signup'>
+  <div class='signup-logo'>
+    <img src="{% static 'logo.png' %}" alt="1" class="logo-img">
+  </div>
+  <p class = 'signup-text'><strong>친구들의 사진과 동영상을 보려면 가입하세요.</strong></p>
+    {% csrf_token %}
+    {% for field in form %}
+    <div class="form-group">
+      {% if field.label == 'Username' %}
+      <input
+        class="form-control log-in-form"
+        
+        placeholder="사용자 이름"
+        name="{{ field.name }}"
+      />
+      {% elif field.label == 'Email address' %}
+      <input
+        class="form-control log-in-form"
+        placeholder=" 이메일 주소 "
+        name="{{ field.name }}"
+      />
+      {% elif field.label == 'Name' %}
+      <input
+        class="form-control log-in-form"
+        placeholder=" 성명 "
+        name="{{ field.name }}"
+      />
+      {% elif field.label == 'Password' %}
+      <input
+        class="form-control log-in-form"
+        placeholder=" 비밀번호 "
+        name="{{ field.name }}"
+      />
+      {% elif field.label == 'Password confirmation' %}
+      <input
+        class="form-control log-in-form"
+        placeholder=" 비밀번호 확인 "
+        name="{{ field.name }}"
+      />
+      {% else %}
+      <input
+        class="form-control log-in-form"
+        placeholder=" 나머지 "
+        name="{{ field.name }}"
+      />
+      {% endif %}
+      
+    </div>
+    {% endfor %}
+    <input type="submit" value = '가입' class='btn btn-primary signup-btn'>
+  </form>
+</div>
+
+
 {% endblock content %}
 
 
