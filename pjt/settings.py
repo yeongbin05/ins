@@ -34,7 +34,7 @@ CUSTOM_APPS = [
     'imagekit',
     # 'common.apps.CommonConfig',
     # 'chats.apps.ChatsConfig',
-    'rest_framework',
+    # 'rest_framework',
     'accounts.apps.AccountsConfig',
     'chats',
     'posts',

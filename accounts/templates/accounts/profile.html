@@ -52,8 +52,15 @@
       
 
       <strong>게시물 {{person.post_set.all.count}}</strong>
+      {% if request.user.is_authenticated %}
       <a href="javascript:void(0)" onclick="openModal()">팔로워 {{ followers.count }}</a>
       <a href="javascript:void(0)" onclick="openfModal()">팔로우 {{ followings.count }}</a>
+      {% else %}
+      <a href="javascript:void(0)" onclick="openLogInModal()">팔로워 {{ followers.count }}</a>
+      <a href="javascript:void(0)" onclick="openLogInModal()">팔로우 {{ followings.count }}</a>
+      
+      {% endif %}
+      
 
      
 
@@ -175,14 +182,22 @@
     
     <div class="icon-image-div">
       <i class="fa-solid fa-video video-icon"></i>
-      <video src="{{ post.image.url }}" alt="" class="image" onclick="openImgModal('{{ post.image.url }}', '{{ forloop.counter }}')"></video>
+      <video src="{{ post.image.url }}" alt="" class="image" onclick="openLogInModal()"></video>
     </div>
+    {% comment %} <div class="icon-image-div">
+      <i class="fa-solid fa-video video-icon"></i>
+      <video src="{{ post.image.url }}" alt="" class="image" onclick="openImgModal('{{ post.image.url }}', '{{ forloop.counter }}')"></video>
+    </div> {% endcomment %}
     
     {% else %}
     <div class="icon-image-div">
     <i class="fa-regular fa-image image-icon"></i>
-    <img src="{{ post.image.url }}" alt="" class="image" onclick="openImgModal('{{ post.image.url }}', '{{ forloop.counter }}')">
+    <img src="{{ post.image.url }}" alt="" class="image" onclick="openLogInModal()">
     </div>
+    {% comment %} <div class="icon-image-div">
+    <i class="fa-regular fa-image image-icon"></i>
+    <img src="{{ post.image.url }}" alt="" class="image" onclick="openImgModal('{{ post.image.url }}', '{{ forloop.counter }}')">
+    </div> {% endcomment %}
     {% endif %}
   
   {% endfor %}
@@ -195,19 +210,6 @@
   
   
   
- 
-
-  <!-- 고유한 id를 가진 모달 팝업 창 -->
-  
-  
-
-   
-
- 
- 
-  
-
-
    
   
   </div>
@@ -265,7 +267,7 @@
 <div id="loginModal" class="login-modal">
   
   <div class="login-modal-content">
-     <div class='x'><i class="fa-solid fa-xmark"></i></div>
+     <div class='x'><i class="fa-solid fa-xmark" onclick="closeLogInModal()"></i></div>
     
       <div class="login-card-modal">
         

@@ -2,8 +2,8 @@
 {% load static %}
 {% block content %}
 
-<div>
-<div class="login-card">
+
+{% comment %} <div class="login-card">
   <div>
     <img src="{% static 'logo.png' %}" alt="1" class="logo-img">
   </div>
@@ -15,6 +15,35 @@
   
   </form>
 </div>
+</div> {% endcomment %}
+<div class="contain-login-card">
+<div class="login-card">
+  
+  <img src="{% static 'logo.png' %}" alt="1" class="index-logo-img">
+  <form action="{% url "accounts:login" %}" method='POST'>
+    {% csrf_token %}
+    {% for field in form %}
+    <div class="form-group">
+      {% if field.label == 'Username' %}
+      <input
+        class="form-control log-in-form"
+        
+        placeholder="전화번호, 사용자 이름 또는 이메일"
+        name="{{ field.name }}"
+      />
+      {% else %}
+      <input
+        class="form-control log-in-form"
+        placeholder=" 비밀번호 "
+        name="{{ field.name }}"
+      />
+      
+      {% endif %}
+      
+    </div>
+    {% endfor %}
+    <input type="submit" value = '로그인' class='btn btn-primary signup-btn'>
+  </form>
 </div>
 <div class="signup-card">
   계정이 없으신가요?

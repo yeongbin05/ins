@@ -190,6 +190,9 @@
     padding-top: 40px;
    
   }
+  body {
+    height:100vh;
+  }
   /* body {
     background-color: blue;
   } */
@@ -449,7 +452,7 @@
   width: 100%;
   height: 100%;
   background-color: rgba(0,0,0,0.7);
-  
+  z-index:200;
 }
 
 .modal-content {
@@ -494,7 +497,14 @@
 /* body {
   background-color: blue;
 }  */
-
+.contain-login-card {
+  width:100%;
+  height:100%;
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 .login-modal {
   display: none;
   position: fixed;
@@ -504,6 +514,7 @@
   width: 100%;
   height: 100%;
   background-color: rgba(0,0,0,0.7);
+  z-index:200;
 }
 
 .login-modal-content {
