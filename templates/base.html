@@ -13,19 +13,37 @@
   <script src="https://kit.fontawesome.com/9e5e44cfd2.js" crossorigin="anonymous"></script>
   
   <style>
+    :root {
+      --ig-separator: #DADDE1;
+    }
+
     .container-fluid {
       display: flex; 
+      height: 100%;
+      overflow-y: visible;
+      box-sizing: border-box;
+      position: static;
+      justify-content: space-between;
+      align-items: stretch;
+      flex-direction: row;
+      
+
     }
 
     .left-nav {
       width: 200px;
-      background-color: #f2f2f2; 
+      border-right: 1px solid var(--ig-separator); 
+      background-color: transparent;
+      z-index: 1;
+      display: block;
     }
   
     .right-content {
-      flex: 1;
-      padding: 20px;
-      min-height: 100vh;
+      justify-content: center;
+      width: 100%;
+      display: flex;
+      padding-top: 22px;
+      flex-direction: row;
     }
   </style>
 
@@ -39,13 +57,21 @@
       <nav class="navbar navbar-expand-lg navbar-light">
           <ul class="navbar-nav flex-column">
             <li>
-              <a class="navbar-brand" href="#">instagram로고</a>
+              <a class="navbar-brand" href="{% url "posts:index" %}">
+                <img src="{% static 'logo.png' %}" alt="1" class="navbar-logo"></a>
+              </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url "posts:index" %}">홈</a>
+              <a class="nav-link" href="{% url "posts:index" %}"><i class="fa-solid fa-house"></i></a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url "inbox" %}">DM</a>
+              <a class="nav-link" href="{% url "posts:index" %}"><i class="fa-solid fa-magnifying-glass"></i></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url "inbox" %}"><i class="fa-regular fa-paper-plane"></i></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#"><i class="fa-regular fa-heart"></i></a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="{% url "accounts:profile" user.username %}">내프로필</a>

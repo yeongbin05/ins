@@ -2,6 +2,63 @@
 {% block content %}
   <h1>HomEEEEEEEEEEEE</h1>
   <h3>** {{ user.username }} ** 이 로그인 된거임</h3>
+  <div>
+    <div>
+      <!--스토리자리-->
+    </div>
+    
+    <div>
+      <!--홈 게시물들-->
+      {% for post in posts %}
+        {% comment %} {% include "posts/home_post.html" %} {% endcomment %}
+        <div>
+          <div>
+          {% if post.image %}
+            <img src="{{ post.image.url }}" alt="post_img">
+          {% endif %}
+          </div>
+          <div class="d-flex justify-content-between">
+            <div class="d-flex">
+              <form action="{% url "posts:likes" post.pk %}" method="POST">
+              {% csrf_token %}
+              {% if request.user in post.like_users.all %}
+                <button type="submit" style="border:none; background:none;">
+                  <i class="fa-solid fa-heart fa-spin" style="color: #9d51db;"></i>
+                </button>
+              {% else %}
+                <button type="submit" style="border:none; background:none;">
+                  <i class="fa-regular fa-heart" style="color: #9d51db;"></i>
+                </button>
+              {% endif %}
+              </form>
 
+              <form action="#" method="POST">
+                {% csrf_token %}
+                <button type="submit" style="border:none; background:none;">
+                  <i class="fa-regular fa-comment fa-flip-horizontal"></i>
+                </button>
+              </form>
+
+              <form action="#" method="POST">
+                {% csrf_token %}
+                <button type="submit" style="border:none; background:none;">
+                  <i class="fa-regular fa-paper-plane"></i>
+                </button>
+              </form>
+            </div>
+            
+            <form action="#" method="POST">
+              {% csrf_token %}
+              <button type="submit" style="border:none; background:none;">
+                <i class="fa-regular fa-bookmark"></i>
+              </button>
+            </form>
+           
+          </div>
+          <p><strong>좋아요 {{ post.like_users.all.count }}개</strong></p>
+        </div>
+      {% endfor %} 
+    </div>
+  </div>
 
 {% endblock content %}

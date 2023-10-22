@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth import get_user_model
 from .models import Hashtag, Post
 from .forms import PostForm, CommentForm
+from accounts.models import Follow
 from django.contrib.auth.decorators import login_required
 import mimetypes
 import re
@@ -15,11 +17,18 @@ import re
 # Create your views here.
 @login_required
 def index(request):
-    post_list = Post.objects.all()
+    followings = Follow.objects.filter(following=request.user) # person이 팔로잉한 follow 목록
+    posts = Post.objects.filter(user__in=followings.values_list('following', flat=True)).order_by('-created_at')
+    print(posts)
+    for post in posts:
+        print(post.like_users.all())
     context = {
-        'post_list':post_list,
+        'posts': posts,
     }
     return render(request, 'posts/index.html', context)
+
+
+
 
 
 @login_required
@@ -73,7 +82,7 @@ def update(request, post_pk):
 @login_required
 def likes(request, post_pk):
     post = Post.objects.get(pk=post_pk)
-    if request.user != post.user:
+    if request.user.username != post.user:
         if request.user in post.like_users.all():
             post.like_users.remove(request.user)
         else:

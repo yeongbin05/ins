@@ -27,6 +27,7 @@ def index(request):
     }
     return render(request,'accounts/index.html',context)
 
+
 def signup(request):
     if request.method == 'POST':
         print(1)

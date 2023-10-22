@@ -5,6 +5,8 @@ def articles_image_path(instance, filename):
 
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
+
+
 class User(AbstractUser):
     name = models.CharField(max_length=100)
     # password = models.CharField(max_length=50)
@@ -16,13 +18,6 @@ class User(AbstractUser):
     # is_active = models.BooleanField(null=True)
 
     followings = models.ManyToManyField('self', through='Follow', symmetrical=False, blank=True)
-
-    
-
-
-
-
-
 
 
 class Follow(models.Model):

@@ -1,28 +1,42 @@
-{% extends "base.html" %}
-{% block content %}
-  <h1>HOME용 게시글 탬플릿</h1>
+{% load static %}
+{% load bootstrap5 %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+  <link rel="stylesheet" href="{% static 'style.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+  <script src="https://kit.fontawesome.com/9e5e44cfd2.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
   <div>
-  {% if post.image %}
-    <img src="{{ post.image_file.url }}" class="card-img-top" alt="post_img">
-  {% endif %}
-  </div>
-  <div>
-    {% if request.user != post.user %}
-      <form action="{% url "posts:likes" post.pk %}" method="POST">
-      {% csrf_token %}
-      {% if request.user in post.like_users.all %}
-        <button type="submit" style="border:none; background:none;">
-          <i class="fa-solid fa-heart" style="color: #9d51db;"></i>
-        </button>
-      {% else %}
-        <button type="submit" style="border:none; background:none;">
-          <i class="fa-regular fa-heart" style="color: #9d51db;"></i>
-        </button>
-      {% endif %}
-    </form>
+    <div>
+    {% if post.image %}
+      <img src="{{ post.image_file.url }}" class="card-img-top" alt="post_img">
     {% endif %}
-    <p>좋아요 수 : {{ post.like_users.all.count }} </p>
+    </div>
+    <div>
+      {% if request.user != post.user %}
+        <form action="{% url "posts:likes" post.pk %}" method="POST">
+        {% csrf_token %}
+        {% if request.user in post.like_users.all %}
+          <button type="submit" style="border:none; background:none;">
+            <i class="fa-solid fa-heart" style="color: #9d51db;"></i>
+          </button>
+        {% else %}
+          <button type="submit" style="border:none; background:none;">
+            <i class="fa-regular fa-heart" style="color: #9d51db;"></i>
+          </button>
+        {% endif %}
+      </form>
+      {% endif %}
+      <p>좋아요 수 : {{ post.like_users.all.count }} </p>
+    </div>
   </div>
-  
-{% endblock content %}
+</body>
+</html>
