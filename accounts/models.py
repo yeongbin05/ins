@@ -29,7 +29,7 @@ class Follow(models.Model):
         unique_together = ('follower', 'following')
     
     def __str__(self):
-        return self.following.username
+        return f'following-{self.following.username}, follower-{self.follower.username}'
 
 
 

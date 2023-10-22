@@ -217,11 +217,12 @@
     z-index: 100;
   }
   .except-nav {
-    margin-left:25%;
-    margin-right:25%;
+    margin-left:5%;
+    margin-right:5%;
+    height: 100%;
     /* height: 250vh; */
-    padding:30px 20px;
-    padding-bottom: 0px;
+    /* padding:30px 20px; */
+    /* padding-bottom: 0px; */
   }
   header {
     margin-bottom: 44px;
@@ -284,12 +285,9 @@
     display: grid;
     /* grid-auto-columns: 309px; */
     grid-template-columns: repeat(3,1fr);
-
     grid-auto-rows: 309px;
     grid-gap :4px;
     /* margin-left:400px; */
-    margin-right:400px;
-    
   }
   
 

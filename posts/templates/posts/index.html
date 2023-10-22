@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load make_link %}  <!--해시태그-->
 {% block content %}
   <h1>HomEEEEEEEEEEEE</h1>
   <h3>** {{ user.username }} ** 이 로그인 된거임</h3>
@@ -12,9 +13,21 @@
       {% for post in posts %}
         {% comment %} {% include "posts/home_post.html" %} {% endcomment %}
         <div>
+          <div class="d-flex justify-content-between">
+            <div>
+              <!--프로필사진-->
+              <span><strong>{{ post.user }}</strong></span>
+            </div>
+            <div>
+              <a href="#">
+                <i class="fa-solid fa-ellipsis" style="color: rgb(30, 48, 80);"></i>
+              </a>
+            </div>
+
+          </div>
           <div>
           {% if post.image %}
-            <img src="{{ post.image.url }}" alt="post_img">
+            <img src="{{ post.image.url }}" alt="post_img" style="width: 100%;">
           {% endif %}
           </div>
           <div class="d-flex justify-content-between">
@@ -56,7 +69,9 @@
            
           </div>
           <p><strong>좋아요 {{ post.like_users.all.count }}개</strong></p>
+          <p><strong>{{ post.user }}</strong> {{ post|word_link|safe }}</p>
         </div>
+        <hr>
       {% endfor %} 
     </div>
   </div>

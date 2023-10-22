@@ -58,6 +58,7 @@ def UserSearch(request):
 	
 	return HttpResponse(template.render(context, request))
 
+
 @login_required
 def Directs(request, username):
     user = request.user

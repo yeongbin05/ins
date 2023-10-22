@@ -1,372 +1,688 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
 {% load static %}
 {% load make_link %}  <!--해시태그-->
-{% block content %}
-<div class="custom-navbar">
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+  <link rel="stylesheet" href="{% static 'style.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://kit.fontawesome.com/9e5e44cfd2.js" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --ig-separator: #DADDE1;
+    }
 
-  <a href="{% url "accounts:index" %}">
-  <img src="{% static 'logo.png' %}" alt="1" class="navbar-logo"></a>
-  {% if request.user.is_authenticated %}
-  <a class="btn btn-primary nav-btn" href="{% url "accounts:logout" %}">로그아웃</a>
-  <a href="{% url "accounts:profile" request.user  %}">내 프로필</a>
-
-  {% else  %}
- <div class="log-sin-nav">
-    <a class="btn btn-primary nav-btn" href="{% url "accounts:login" %}">로그인</a>
-    <div>
-      <a href="{% url "accounts:signup" %}">가입하기</a>
-    </div>
-  </div>
-
- {% endif %}
-</div>
-<div class="except-nav">
-<header>
-  <div class='profile-image'><img src="" class ='profile' alt=""></div>
-  <div class="except-image">
-    <div>
-      <span>{{ person }}</span>
-      {% if request.user != person %}
-      <div class='follow-message'>
-        <!--팔로우 기능-->
-        <form action="{% url "accounts:follow" person.username %}" method="POST">
-          {% csrf_token %}
-          {% comment %} {% if request.user not in followers %} {% endcomment %}
-          {% if request.user.username  in users %}
-            <input type="submit" value="팔로우 취소" class="btn btn-light">
-          {% else %}
-            <input type="submit" value="팔로우" class="btn btn-primary">
-          {% endif %}
-
-        </form>
-        <!--DM 기능-->
-        <a href="{% url "directs" person.username %}"><button type="button" class="btn btn-light grey-btn">Message</button></a>
-      </div>
-      {% else %}
-
-      {% endif %}
-    </div>
-        
-
-    <div>
-
+    .container-fluid {
+      display: flex; 
+      height: 100%;
+      overflow-y: visible;
+      box-sizing: border-box;
+      position: static;
+      justify-content: space-between;
+      align-items: stretch;
+      flex-direction: row;
       
 
-      <strong>게시물 {{person.post_set.all.count}}</strong>
-      {% if request.user.is_authenticated %}
-      <a href="javascript:void(0)" onclick="openModal()">팔로워 {{ followers.count }}</a>
-      <a href="javascript:void(0)" onclick="openfModal()">팔로우 {{ followings.count }}</a>
-      {% else %}
-      <a href="javascript:void(0)" onclick="openLogInModal()">팔로워 {{ followers.count }}</a>
-      <a href="javascript:void(0)" onclick="openLogInModal()">팔로우 {{ followings.count }}</a>
-      
-      {% endif %}
-      
+    }
 
-     
-
-
-    </div>
-    
-  </div>
-</header>
-{% comment %} {% for post in  person.post_set.all %}
-{% if post.image.url|slice:'-4:' == '.mp4'  %}
-<div class="video">
-    <video autoplay="autoplay" controls="controls" preload="preload">
-      <source src="{{post.image.url}}" type="video/mp4"></source>
-    </video>
-</div>
-{% endif %}
-{% endfor %} {% endcomment %}
-
-<div class="header-bottom">
-  게시물
+    .left-nav {
+      width: 200px;
+      border-right: 1px solid var(--ig-separator); 
+      background-color: transparent;
+      z-index: 1;
+      display: block;
+    }
   
-</div>
-  <div class="pics">
-    {% if request.user.is_authenticated %}
-    {% for post in person.post_set.all  %}
-    {% if post.image.url|slice:'-4:' == '.mp4'  %}
-    
-    <div class="icon-image-div">
-      <i class="fa-solid fa-video video-icon"></i>
-      <video src="{{ post.image.url }}" alt="" class="image" onclick="openImgModal('{{ post.image.url }}', '{{ forloop.counter }}')"></video>
-    </div>
-    
-    {% else %}
-    <div class="icon-image-div">
-    <i class="fa-regular fa-image image-icon"></i>
-    <img src="{{ post.image.url }}" alt="" class="image" onclick="openImgModal('{{ post.image.url }}', '{{ forloop.counter }}')">
-    </div>
-    {% endif %}
-  <div id="imgModal{{ forloop.counter }}" class="modal">
-    
-    <div class="img-modal-content">
-     
-      <!-- 이미지 표시 -->
-      <div class="modal-img-image">
-        
+    .right-content {
+      justify-content: center;
+      width: 100%;
+      display: flex;
+      padding-top: 22px;
+      flex-direction: row;
+    }
+  </style>
 
+</head>
+<body>
+  {% if request.user.is_authenticated %}
+  <!--로그인된 상태의 프로필페이지-->
+  <div class="container-fluid">
+    <div class="left-nav">
+      <!-- 왼쪽 Navbar -->
+      {% include '_navbar.html' %}
+    </div>
+      <div class="right-content">
+        <!-- 오른쪽 콘텐츠 -->
+        <div>
+         <!--##################################################-->
+          
+          <div class="except-nav">
+          <header>
+            <div class='profile-image'><img src="" class ='profile' alt=""></div>
+            <div class="except-image">
+              <div>
+                <span>{{ person }}</span>
+                {% if request.user != person %}
+                <div class='follow-message'>
+                  <!--팔로우 기능-->
+                  <form action="{% url "accounts:follow" person.username %}" method="POST">
+                    {% csrf_token %}
+                    {% comment %} {% if request.user not in followers %} {% endcomment %}
+                    {% if request.user.username  in users %}
+                      <input type="submit" value="팔로우 취소" class="btn btn-light">
+                    {% else %}
+                      <input type="submit" value="팔로우" class="btn btn-primary">
+                    {% endif %}
+          
+                  </form>
+                  <!--DM 기능-->
+                  <a href="{% url "directs" person.username %}"><button type="button" class="btn btn-light grey-btn">Message</button></a>
+                </div>
+                {% else %}
+          
+                {% endif %}
+              </div>
+                  
+          
+              <div>
+          
+                
+          
+                <strong>게시물 {{person.post_set.all.count}}</strong>
+                {% if request.user.is_authenticated %}
+                <a href="javascript:void(0)" onclick="openModal()">팔로워 {{ followers.count }}</a>
+                <a href="javascript:void(0)" onclick="openfModal()">팔로우 {{ followings.count }}</a>
+                {% else %}
+                <a href="javascript:void(0)" onclick="openLogInModal()">팔로워 {{ followers.count }}</a>
+                <a href="javascript:void(0)" onclick="openLogInModal()">팔로우 {{ followings.count }}</a>
+                
+                {% endif %}
+                
+          
+              
+          
+          
+              </div>
+              
+            </div>
+          </header>
+          {% comment %} {% for post in  person.post_set.all %}
+          {% if post.image.url|slice:'-4:' == '.mp4'  %}
+          <div class="video">
+              <video autoplay="autoplay" controls="controls" preload="preload">
+                <source src="{{post.image.url}}" type="video/mp4"></source>
+              </video>
+          </div>
+          {% endif %}
+          {% endfor %} {% endcomment %}
+          <div class="header-bottom">
+            게시물
+            
+          </div>
+            <div class="pics">
+              {% if request.user.is_authenticated %}
+              {% for post in person.post_set.all  %}
+              {% if post.image.url|slice:'-4:' == '.mp4'  %}
+              
+              <div class="icon-image-div">
+                <i class="fa-solid fa-video video-icon"></i>
+                <video src="{{ post.image.url }}" alt="" class="image" onclick="openImgModal('{{ post.image.url }}', '{{ forloop.counter }}')"></video>
+              </div>
+              
+              {% else %}
+              <div class="icon-image-div">
+              <i class="fa-regular fa-image image-icon"></i>
+              <img src="{{ post.image.url }}" alt="" class="image" onclick="openImgModal('{{ post.image.url }}', '{{ forloop.counter }}')">
+              </div>
+              {% endif %}
+            <div id="imgModal{{ forloop.counter }}" class="modal">
+              
+              <div class="img-modal-content">
+              
+                <!-- 이미지 표시 -->
+                <div class="modal-img-image">
+                  
+          
+                  
+                  {% comment %} {{post.image.url}} {% endcomment %}
+                  {% if post.image.url|slice:'-4:' == '.mp4'  %}
+                  <video autoplay="autoplay" controls="controls" preload="preload">
+                    <source src="{{post.image.url}}" type="video/mp4"></source>
+                  </video>
+                  {% else %}
+                  <img src="{{ post.image.url }}" alt="" class="image">
+                  {% endif %}
+                  
+                  
+                  
+                  
+                  
+                  
+                </div>
+          
+                <div class="modal-img-right">
+                  
+          
+                    
+                    
+                    {% if request.user != person %}
+                <div class='follow-message'>
+                  
+                  {{person}}
+                  {% if request.user.username not in users %}
+                  
+                  
+                  
+                  <form action="{% url "accounts:follow" person.username %}" method="POST">
+                    {% csrf_token %}
+                    
+                      <input type="submit" value="팔로우" class="modal-follow-btn">
+                    
+                    {% endif %}
+          
+                  </form>
+          
+                </div>
+                {% else %}
+          
+                {% endif %}
+                <p>{{ post|word_link|safe }}</p>   <!--해시태그 필터-->
+                  <form action="">
+                    {{comment_form}}
+                    <input type="submit">
+                  </form>
+                  {% if request.user == person %}
+                  <form action="{% url "posts:delete" post.pk%}" method='POST'>
+                    {% csrf_token %}
+                    <input type="submit" value='delete'>
+                  </form>
+                  {% endif %}
+                </div>
+                
+              </div>
+            </div>
+            
+            {% endfor %}
+            <div class="want-more">
+            <strong> {{person}}님의 게시물 더 보기</strong>
+            
+            </div>
+            {% else %}
+            
+            
+            
+            <div class="want-more">
+              <strong> {{person}}님의 게시물 더 보기</strong>
+              
+            </div>
+            {% endif %}
+            <!-- 이미지를 클릭하면 해당 모달 팝업 창 열기 -->
+          
+            </div>
+            </div>
+
+          
+          <!--모달-->
+          
+          <div id="myModal" class="modal">
+            <div class="modal-content">
+              
+                {% for id in followers %}               <!--host를 팔로우한 Follow테이블 데이터들에서 -->
+                  <a href="{% url "accounts:profile" id.following %}">{{ id.following }}</a>             <!--following값이 host를 팔로우한 사람들-->
+                
+                <hr>
+                {% endfor %}
+            </div>
+          </div>
+          
+          <div id="myfModal" class="modal">
+            <div class="modal-content">
+              
+              {% for id in followings %}
+                  <a href="{% url "accounts:profile" id.follower %}">{{ id.follower }}</a>
+                {% endfor %}
+                <hr>
+                
+            </div>
+          </div>
+          
+          
+          <script>
+            // 모달 열기
+            function openModal() {
+              document.getElementById('myModal').style.display = 'block';
+            }
+          
+            // 모달 닫기
+            function closeModal() {
+              document.getElementById('myModal').style.display = 'none';
+            }
+            // 모달 외부를 클릭하면 모달 닫기
+            window.onclick = function(event) {
+              if (event.target === document.getElementById('myModal')) {
+                closeModal();
+              }
+              else if (event.target === document.getElementById('myfModal')) {
+                closefModal();
+              }
+              else if (event.target === document.getElementById('loginModal')) {
+                closeLogInModal();
+              }
+            }
+            
+            function openfModal() {
+              document.getElementById('myfModal').style.display = 'block';
+            }
+          
+            // 모달 닫기
+            function closefModal() {
+              document.getElementById('myfModal').style.display = 'none';
+            }
+            function openLogInModal() {
+              document.getElementById('loginModal').style.display = 'block';
+            }
+          
+            // 모달 닫기
+            function closeLogInModal() {
+              document.getElementById('loginModal').style.display = 'none';
+            }
+          
+          function openImgModal(imgUrl, modalNumber) {
+            // 이미지 URL을 모달에 설정
+            const imgModal = document.getElementById(`imgModal${modalNumber}`);
+            const modalImage = imgModal.querySelector('img');
+            modalImage.src = imgUrl;
+          
+            imgModal.style.display = 'block';
+          
+            // 모달 외부를 클릭하면 모달 닫기
+            imgModal.onclick = function(event) {
+              if (event.target === imgModal) {
+                closeImgModal(modalNumber);
+              }
+            };
+          }
+          
+          // 모달 닫기
+          function closeImgModal(modalNumber) {
+            const imgModal = document.getElementById(`imgModal${modalNumber}`);
+            imgModal.style.display = 'none';
+          } 
+          </script>
+        <!--############################-->
+        </div>
+      </div>
+  </div>
+  
+  {% else %}
+  <!--로그인 안된 상태의 프로필페이지-->
+    <div class="custom-navbar">
+
+      <a href="{% url "accounts:index" %}">
+      <img src="{% static 'logo.png' %}" alt="1" class="navbar-logo"></a>
+      {% if request.user.is_authenticated %}
+      <a class="btn btn-primary nav-btn" href="{% url "accounts:logout" %}">로그아웃</a>
+      <a href="{% url "accounts:profile" request.user  %}">내 프로필</a>
+    
+      {% else  %}
+    <div class="log-sin-nav">
+        <a class="btn btn-primary nav-btn" href="{% url "accounts:login" %}">로그인</a>
+        <div>
+          <a href="{% url "accounts:signup" %}">가입하기</a>
+        </div>
+      </div>
+    
+    {% endif %}
+    </div>
+    <div class="except-nav">
+    <header>
+      <div class='profile-image'><img src="" class ='profile' alt=""></div>
+      <div class="except-image">
+        <div>
+          <span>{{ person }}</span>
+          {% if request.user != person %}
+          <div class='follow-message'>
+            <!--팔로우 기능-->
+            <form action="{% url "accounts:follow" person.username %}" method="POST">
+              {% csrf_token %}
+              {% comment %} {% if request.user not in followers %} {% endcomment %}
+              {% if request.user.username  in users %}
+                <input type="submit" value="팔로우 취소" class="btn btn-light">
+              {% else %}
+                <input type="submit" value="팔로우" class="btn btn-primary">
+              {% endif %}
+    
+            </form>
+            <!--DM 기능-->
+            <a href="{% url "directs" person.username %}"><button type="button" class="btn btn-light grey-btn">Message</button></a>
+          </div>
+          {% else %}
+    
+          {% endif %}
+        </div>
+            
+    
+        <div>
+    
+          
+    
+          <strong>게시물 {{person.post_set.all.count}}</strong>
+          {% if request.user.is_authenticated %}
+          <a href="javascript:void(0)" onclick="openModal()">팔로워 {{ followers.count }}</a>
+          <a href="javascript:void(0)" onclick="openfModal()">팔로우 {{ followings.count }}</a>
+          {% else %}
+          <a href="javascript:void(0)" onclick="openLogInModal()">팔로워 {{ followers.count }}</a>
+          <a href="javascript:void(0)" onclick="openLogInModal()">팔로우 {{ followings.count }}</a>
+          
+          {% endif %}
+          
+    
         
-        {% comment %} {{post.image.url}} {% endcomment %}
-        {% if post.image.url|slice:'-4:' == '.mp4'  %}
+    
+    
+        </div>
+        
+      </div>
+    </header>
+    {% comment %} {% for post in  person.post_set.all %}
+    {% if post.image.url|slice:'-4:' == '.mp4'  %}
+    <div class="video">
         <video autoplay="autoplay" controls="controls" preload="preload">
           <source src="{{post.image.url}}" type="video/mp4"></source>
         </video>
-        {% else %}
-        <img src="{{ post.image.url }}" alt="" class="image">
-        {% endif %}
-        
-        
-        
-        
-        
-        
-      </div>
-
-      <div class="modal-img-right">
-        
-
-          
-          
-          {% if request.user != person %}
-      <div class='follow-message'>
-        
-         {{person}}
-         {% if request.user.username not in users %}
-         
-        
-         
-        <form action="{% url "accounts:follow" person.username %}" method="POST">
-          {% csrf_token %}
-          
-            <input type="submit" value="팔로우" class="modal-follow-btn">
-          
-          {% endif %}
-
-        </form>
-
-      </div>
-      {% else %}
-
-      {% endif %}
-      <p>{{ post|word_link|safe }}</p>   <!--해시태그 필터-->
-        <form action="">
-          {{comment_form}}
-          <input type="submit">
-        </form>
-        {% if request.user == person %}
-        <form action="{% url "posts:delete" post.pk%}" method='POST'>
-          {% csrf_token %}
-          <input type="submit" value='delete'>
-        </form>
-        {% endif %}
-      </div>
-      
     </div>
-  </div>
-  
-  {% endfor %}
-  <div class="want-more">
-   <strong> {{person}}님의 게시물 더 보기</strong>
-   
-  </div>
-  {% else %}
-  
-  
-  <!-- 로그인 안 했으면 로그인 모달 띄우기-->
-  {% for post in person.post_set.all  %}
-  
-  {% comment %} <img src="{{ post.image.url }}" alt="" class="image" onclick="openLogInModal()"> {% endcomment %}{% if post.image.url|slice:'-4:' == '.mp4'  %}
-    
-    <div class="icon-image-div">
-      <i class="fa-solid fa-video video-icon"></i>
-      <video src="{{ post.image.url }}" alt="" class="image" onclick="openLogInModal()"></video>
-    </div>
-    {% comment %} <div class="icon-image-div">
-      <i class="fa-solid fa-video video-icon"></i>
-      <video src="{{ post.image.url }}" alt="" class="image" onclick="openImgModal('{{ post.image.url }}', '{{ forloop.counter }}')"></video>
-    </div> {% endcomment %}
-    
-    {% else %}
-    <div class="icon-image-div">
-    <i class="fa-regular fa-image image-icon"></i>
-    <img src="{{ post.image.url }}" alt="" class="image" onclick="openLogInModal()">
-    </div>
-    {% comment %} <div class="icon-image-div">
-    <i class="fa-regular fa-image image-icon"></i>
-    <img src="{{ post.image.url }}" alt="" class="image" onclick="openImgModal('{{ post.image.url }}', '{{ forloop.counter }}')">
-    </div> {% endcomment %}
     {% endif %}
-  
-  {% endfor %}
-  <div class="want-more">
-    <strong> {{person}}님의 게시물 더 보기</strong>
+    {% endfor %} {% endcomment %}
     
-   </div>
-  {% endif %}
-  <!-- 이미지를 클릭하면 해당 모달 팝업 창 열기 -->
-  
-  
-  
-   
-  
-  </div>
-  </div>
-<!--내 게시글이면 구현 안됨-->
-{% if request.user == person %}
-<a href="{% url "posts:create" %}">게시글 올리기</a>
-{% comment %} <a href="{% url "accounts:create" user%}">프로필 올리기</a> {% endcomment %}
-
-{% endif %}
-{% if request.user.is_authenticated %}
-{% else %}
-<div class="footer-black">
-  <div class="white">
-  <div class="profile-footer-logo">
-    <img src="{% static 'simple_logo.png' %}" alt="logo" class="profile-footer-logo-img">
-  </div>
-  <div class='profile-footer-text'>
-    <div>Instagram에 로그인</div>
-    <div>로그인하여 친구들의 사진과 동영상을 확인하고 회원님이 좋아할 만한 계정을 찾아보세요.</div>
-  </div>
-  <div class='profile-footer-button'>
-    <a href="{% url "accounts:login" %}" class='btn btn-primary'>로그인</a>
-    <div><a href="{% url "accounts:signup" %}">가입하기</a></div>
-  </div>
-</div>
-</div>
-{% endif %}
-
-<!--모달-->
-
-<div id="myModal" class="modal">
-  <div class="modal-content">
-    
-      {% for id in followers %}               <!--host를 팔로우한 Follow테이블 데이터들에서 -->
-        <a href="{% url "accounts:profile" id.following %}">{{ id.following }}</a>             <!--following값이 host를 팔로우한 사람들-->
+    <div class="header-bottom">
+      게시물 
+    </div>
+    <div class="pics">
+      {% if request.user.is_authenticated %}
+      {% for post in person.post_set.all  %}
+      {% if post.image.url|slice:'-4:' == '.mp4'  %}
       
-      <hr>
-      {% endfor %}
-  </div>
-</div>
-
-<div id="myfModal" class="modal">
-  <div class="modal-content">
-    
-    {% for id in followings %}
-        <a href="{% url "accounts:profile" id.follower %}">{{ id.follower }}</a>
-      {% endfor %}
-      <hr>
+      <div class="icon-image-div">
+        <i class="fa-solid fa-video video-icon"></i>
+        <video src="{{ post.image.url }}" alt="" class="image" onclick="openImgModal('{{ post.image.url }}', '{{ forloop.counter }}')"></video>
+      </div>
       
-  </div>
-</div>
-
-<!--로그인모달-->
-<div id="loginModal" class="login-modal">
+      {% else %}
+      <div class="icon-image-div">
+      <i class="fa-regular fa-image image-icon"></i>
+      <img src="{{ post.image.url }}" alt="" class="image" onclick="openImgModal('{{ post.image.url }}', '{{ forloop.counter }}')">
+      </div>
+      {% endif %}
+    <div id="imgModal{{ forloop.counter }}" class="modal">
+      
+      <div class="img-modal-content">
+      
+        <!-- 이미지 표시 -->
+        <div class="modal-img-image">
+          
   
-  <div class="login-modal-content">
-     <div class='x'><i class="fa-solid fa-xmark" onclick="closeLogInModal()"></i></div>
-    
-      <div class="login-card-modal">
-        
-        <img src="{% static 'logo.png' %}" alt="1" class="index-logo-img">
-        <form action="{% url "accounts:login" %}" method='POST'>
-          {% csrf_token %}
-          {% for field in form %}
-          <div class="form-group">
-            {% if field.label == 'Username' %}
-            <input
-              class="form-control log-in-form"
-              
-              placeholder="전화번호, 사용자 이름 또는 이메일"
-              name="{{ field.name }}"
-            />
-            {% else %}
-            <input
-              class="form-control log-in-form"
-              placeholder=" 비밀번호 "
-              name="{{ field.name }}"
-            />
+          
+          {% comment %} {{post.image.url}} {% endcomment %}
+          {% if post.image.url|slice:'-4:' == '.mp4'  %}
+          <video autoplay="autoplay" controls="controls" preload="preload">
+            <source src="{{post.image.url}}" type="video/mp4"></source>
+          </video>
+          {% else %}
+          <img src="{{ post.image.url }}" alt="" class="image">
+          {% endif %}
+          
+          
+          
+          
+          
+          
+        </div>
+  
+        <div class="modal-img-right">
+          
+  
+            
+            
+            {% if request.user != person %}
+        <div class='follow-message'>
+          
+          {{person}}
+          {% if request.user.username not in users %}
+          
+          
+          
+          <form action="{% url "accounts:follow" person.username %}" method="POST">
+            {% csrf_token %}
+            
+              <input type="submit" value="팔로우" class="modal-follow-btn">
             
             {% endif %}
-            
-          </div>
-          {% endfor %}
-          <input type="submit" value = '로그인' class='  signup-btn'>
-        </form>
-      </div>
-      <div class="login-card-modal-bottom" >
-        <span>계정이 없으신가요?</span>
-        <span><a href="{% url "accounts:signup" %}">가입하기</a></span>
-      </div>
-      
-      
-  </div>
-</div>
-<script>
-  // 모달 열기
-  function openModal() {
-    document.getElementById('myModal').style.display = 'block';
-  }
-
-  // 모달 닫기
-  function closeModal() {
-    document.getElementById('myModal').style.display = 'none';
-  }
-  // 모달 외부를 클릭하면 모달 닫기
-  window.onclick = function(event) {
-    if (event.target === document.getElementById('myModal')) {
-      closeModal();
-    }
-    else if (event.target === document.getElementById('myfModal')) {
-      closefModal();
-    }
-    else if (event.target === document.getElementById('loginModal')) {
-      closeLogInModal();
-    }
-  }
   
-  function openfModal() {
-    document.getElementById('myfModal').style.display = 'block';
-  }
-
-  // 모달 닫기
-  function closefModal() {
-    document.getElementById('myfModal').style.display = 'none';
-  }
-  function openLogInModal() {
-    document.getElementById('loginModal').style.display = 'block';
-  }
-
-  // 모달 닫기
-  function closeLogInModal() {
-    document.getElementById('loginModal').style.display = 'none';
-  }
-
-function openImgModal(imgUrl, modalNumber) {
-  // 이미지 URL을 모달에 설정
-  const imgModal = document.getElementById(`imgModal${modalNumber}`);
-  const modalImage = imgModal.querySelector('img');
-  modalImage.src = imgUrl;
-
-  imgModal.style.display = 'block';
-
-  // 모달 외부를 클릭하면 모달 닫기
-  imgModal.onclick = function(event) {
-    if (event.target === imgModal) {
-      closeImgModal(modalNumber);
+          </form>
+  
+        </div>
+  
+        {% endif %}
+        
+        <p>{{ post|word_link|safe }}</p>   <!--해시태그 필터-->
+          <form action="">
+            {{comment_form}}
+            <input type="submit">
+          </form>
+          {% if request.user == person %}
+          <form action="{% url "posts:delete" post.pk%}" method='POST'>
+            {% csrf_token %}
+            <input type="submit" value='delete'>
+          </form>
+          {% endif %}
+        </div>
+        
+      </div>
+    </div>
+    
+    {% endfor %}
+    <div class="want-more">
+    <strong> {{person}}님의 게시물 더 보기</strong>
+    
+    </div>
+    {% else %}
+    
+    
+    <!-- 로그인 안 했으면 로그인 모달 띄우기-->
+    {% for post in person.post_set.all  %}
+    
+    {% comment %} <img src="{{ post.image.url }}" alt="" class="image" onclick="openLogInModal()"> {% endcomment %}{% if post.image.url|slice:'-4:' == '.mp4'  %}
+      
+      <div class="icon-image-div">
+        <i class="fa-solid fa-video video-icon"></i>
+        <video src="{{ post.image.url }}" alt="" class="image" onclick="openLogInModal()"></video>
+      </div>
+      {% comment %} <div class="icon-image-div">
+        <i class="fa-solid fa-video video-icon"></i>
+        <video src="{{ post.image.url }}" alt="" class="image" onclick="openImgModal('{{ post.image.url }}', '{{ forloop.counter }}')"></video>
+      </div> {% endcomment %}
+      
+      {% else %}
+      <div class="icon-image-div">
+      <i class="fa-regular fa-image image-icon"></i>
+      <img src="{{ post.image.url }}" alt="" class="image" onclick="openLogInModal()">
+      </div>
+      {% comment %} <div class="icon-image-div">
+      <i class="fa-regular fa-image image-icon"></i>
+      <img src="{{ post.image.url }}" alt="" class="image" onclick="openImgModal('{{ post.image.url }}', '{{ forloop.counter }}')">
+      </div> {% endcomment %}
+      {% endif %}
+    
+    {% endfor %}
+    <div class="want-more">
+      <strong> {{person}}님의 게시물 더 보기</strong>
+      
+    </div>
+    {% endif %}
+    <!-- 이미지를 클릭하면 해당 모달 팝업 창 열기 -->
+    
+    </div>
+      </div>
+    {% if request.user.is_authenticated %}
+    {% else %}
+    <div class="footer-black">
+      <div class="white">
+      <div class="profile-footer-logo">
+        <img src="{% static 'simple_logo.png' %}" alt="logo" class="profile-footer-logo-img">
+      </div>
+      <div class='profile-footer-text'>
+        <div>Instagram에 로그인</div>
+        <div>로그인하여 친구들의 사진과 동영상을 확인하고 회원님이 좋아할 만한 계정을 찾아보세요.</div>
+      </div>
+      <div class='profile-footer-button'>
+        <a href="{% url "accounts:login" %}" class='btn btn-primary'>로그인</a>
+        <div><a href="{% url "accounts:signup" %}">가입하기</a></div>
+      </div>
+    </div>
+    </div>
+    {% endif %}
+    
+    <!--모달-->
+    
+    <div id="myModal" class="modal">
+      <div class="modal-content">
+        
+          {% for id in followers %}               <!--host를 팔로우한 Follow테이블 데이터들에서 -->
+            <a href="{% url "accounts:profile" id.following %}">{{ id.following }}</a>             <!--following값이 host를 팔로우한 사람들-->
+          
+          <hr>
+          {% endfor %}
+      </div>
+    </div>
+    
+    <div id="myfModal" class="modal">
+      <div class="modal-content">
+        
+        {% for id in followings %}
+            <a href="{% url "accounts:profile" id.follower %}">{{ id.follower }}</a>
+          {% endfor %}
+          <hr>
+          
+      </div>
+    </div>
+    
+    <!--로그인모달-->
+    <div id="loginModal" class="login-modal">
+      
+      <div class="login-modal-content">
+        <div class='x'><i class="fa-solid fa-xmark" onclick="closeLogInModal()"></i></div>
+        
+          <div class="login-card-modal">
+            
+            <img src="{% static 'logo.png' %}" alt="1" class="index-logo-img">
+            <form action="{% url "accounts:login" %}" method='POST'>
+              {% csrf_token %}
+              {% for field in form %}
+              <div class="form-group">
+                {% if field.label == 'Username' %}
+                <input
+                  class="form-control log-in-form"
+                  
+                  placeholder="전화번호, 사용자 이름 또는 이메일"
+                  name="{{ field.name }}"
+                />
+                {% else %}
+                <input
+                  class="form-control log-in-form"
+                  placeholder=" 비밀번호 "
+                  name="{{ field.name }}"
+                />
+                
+                {% endif %}
+                
+              </div>
+              {% endfor %}
+              <input type="submit" value = '로그인' class='  signup-btn'>
+            </form>
+          </div>
+          <div class="login-card-modal-bottom" >
+            <span>계정이 없으신가요?</span>
+            <span><a href="{% url "accounts:signup" %}">가입하기</a></span>
+          </div>
+          
+          
+      </div>
+    </div>
+    <script>
+      // 모달 열기
+      function openModal() {
+        document.getElementById('myModal').style.display = 'block';
+      }
+    
+      // 모달 닫기
+      function closeModal() {
+        document.getElementById('myModal').style.display = 'none';
+      }
+      // 모달 외부를 클릭하면 모달 닫기
+      window.onclick = function(event) {
+        if (event.target === document.getElementById('myModal')) {
+          closeModal();
+        }
+        else if (event.target === document.getElementById('myfModal')) {
+          closefModal();
+        }
+        else if (event.target === document.getElementById('loginModal')) {
+          closeLogInModal();
+        }
+      }
+      
+      function openfModal() {
+        document.getElementById('myfModal').style.display = 'block';
+      }
+    
+      // 모달 닫기
+      function closefModal() {
+        document.getElementById('myfModal').style.display = 'none';
+      }
+      function openLogInModal() {
+        document.getElementById('loginModal').style.display = 'block';
+      }
+    
+      // 모달 닫기
+      function closeLogInModal() {
+        document.getElementById('loginModal').style.display = 'none';
+      }
+    
+    function openImgModal(imgUrl, modalNumber) {
+      // 이미지 URL을 모달에 설정
+      const imgModal = document.getElementById(`imgModal${modalNumber}`);
+      const modalImage = imgModal.querySelector('img');
+      modalImage.src = imgUrl;
+    
+      imgModal.style.display = 'block';
+    
+      // 모달 외부를 클릭하면 모달 닫기
+      imgModal.onclick = function(event) {
+        if (event.target === imgModal) {
+          closeImgModal(modalNumber);
+        }
+      };
     }
-  };
-}
+    
+    // 모달 닫기
+    function closeImgModal(modalNumber) {
+      const imgModal = document.getElementById(`imgModal${modalNumber}`);
+      imgModal.style.display = 'none';
+    } 
+    </script>
+  {% endif %}
 
-// 모달 닫기
- function closeImgModal(modalNumber) {
-  const imgModal = document.getElementById(`imgModal${modalNumber}`);
-  imgModal.style.display = 'none';
-} 
-</script>
 
-{% endblock content %}
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+</body>
+</html>
+
+
+
+
+
+
 

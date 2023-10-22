@@ -17,18 +17,14 @@ import re
 # Create your views here.
 @login_required
 def index(request):
-    followings = Follow.objects.filter(following=request.user) # person이 팔로잉한 follow 목록
-    posts = Post.objects.filter(user__in=followings.values_list('following', flat=True)).order_by('-created_at')
-    print(posts)
+    followings = Follow.objects.filter(following=request.user)      # user가 팔로잉한 follow 목록
+    posts = Post.objects.filter(user__in=followings.values_list('follower', flat=True)).order_by('-created_at')  # 팔로잉목록에서 follower들의 포스트
     for post in posts:
         print(post.like_users.all())
     context = {
         'posts': posts,
     }
     return render(request, 'posts/index.html', context)
-
-
-
 
 
 @login_required

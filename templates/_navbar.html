@@ -1,0 +1,38 @@
+{% load static %}
+
+<nav class="navbar navbar-expand-lg navbar-light">
+  <ul class="navbar-nav flex-column">
+    <li>
+      <a class="navbar-brand" href="{% url "posts:index" %}">
+        <img src="{% static 'logo.png' %}" alt="1" class="navbar-logo"></a>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url "posts:index" %}"><i class="fa-solid fa-house"></i></a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url "posts:index" %}"><i class="fa-solid fa-magnifying-glass"></i></a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url "inbox" %}"><i class="fa-regular fa-paper-plane"></i></a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#"><i class="fa-regular fa-heart"></i></a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url "posts:create" %}"><i class="fa-regular fa-square-plus"></i> 만들기</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url "accounts:profile" user.username %}">내프로필</a>
+    </li>
+    <li class="nav-item dropdown">
+      <span class="navbar-toggler-icon" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+      </span>
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="#">모드 전환</a></li>
+        <li><a class="dropdown-item" href="#">계정</a></li>
+        <li><a class "dropdown-item" href="{% url "accounts:logout" %}">로그아웃</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
