@@ -16,7 +16,7 @@
           <div class="d-flex justify-content-between">
             <div>
               <!--프로필사진-->
-              <span><strong>{{ post.user }}</strong></span>
+              <a href="{% url "accounts:profile" post.user.username %}"><strong>{{ post.user }}</strong></a>
             </div>
             <div>
               <a href="#">

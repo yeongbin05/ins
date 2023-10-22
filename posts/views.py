@@ -18,7 +18,7 @@ import re
 @login_required
 def index(request):
     followings = Follow.objects.filter(following=request.user)      # user가 팔로잉한 follow 목록
-    posts = Post.objects.filter(user__in=followings.values_list('follower', flat=True)).order_by('-created_at')  # 팔로잉목록에서 follower들의 포스트
+    posts = Post.objects.filter(user__in=followings.values_list('follower', flat=True)).order_by('-updated_at')  # 팔로잉목록에서 follower들의 포스트
     for post in posts:
         print(post.like_users.all())
     context = {
